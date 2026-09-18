@@ -273,6 +273,24 @@ leen como aplicación, no como joyería.
 
 ---
 
+## La ficha de producto y el carrito
+
+Se abren en una **ventana centrada**, no en un cajón lateral. En pantalla ancha
+la ficha usa dos columnas —foto a la izquierda, información a la derecha— para
+que la descripción, el material y los colores se vean sin scrollear. En celular
+se apilan, con la foto acotada a 30vh.
+
+**La altura de la foto la define el contenedor** (`.detail__media`), no la
+imagen. Si se la dejaba a la imagen con su proporción 3:4, la fila de la grilla
+se calculaba mal y la foto terminaba montándose sobre el título en el celular.
+Si cambiás ese encuadre, cambiá el `height` del contenedor, no el de la `img`.
+
+El fondo oscurecido vive en el mismo elemento que envuelve la ventana
+(`.modal-wrap`), así el clic en el vacío llega al elemento que lo pinta. Cerrar
+funciona de tres formas: la cruz, el clic afuera y la tecla Escape.
+
+---
+
 ## Animaciones
 
 Una sola idea, repetida: los elementos aparecen con un desplazamiento corto y un

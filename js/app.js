@@ -128,13 +128,15 @@
 
   const layer = $("#layer");
 
-  function openLayer(html, onMount) {
+  function openLayer(html, onMount, ancho) {
     lastFocus = document.activeElement;
     layer.innerHTML =
-      '<div class="scrim" data-close="1"></div><aside class="panel" role="dialog" aria-modal="true">' +
-      html + "</aside>";
+      '<div class="modal-wrap">' +
+        '<div class="modal' + (ancho === "wide" ? " modal--wide" : "") + '"' +
+        ' role="dialog" aria-modal="true">' + html + "</div>" +
+      "</div>";
     document.body.classList.add("no-scroll");
-    const panel = $(".panel", layer);
+    const panel = $(".modal", layer);
     if (onMount) onMount(panel);
     const first = $("[data-autofocus]", panel) || $(".panel__head button", panel);
     if (first) first.focus();
@@ -148,6 +150,12 @@
   }
 
   document.addEventListener("click", (e) => {
+    /* Clic en el vacío alrededor de la ventana: cierra. */
+    if (e.target.classList && e.target.classList.contains("modal-wrap")) {
+      closeLayer();
+      return;
+    }
+    /* Dentro de la ventana sólo cierran los elementos marcados. */
     if (e.target.closest("[data-close]")) closeLayer();
   });
 
@@ -157,7 +165,7 @@
 
   const headHTML = (title) =>
     '<div class="panel__head"><h2 class="panel__title">' + esc(title) + "</h2>" +
-    '<button class="icon-btn" data-close="1" aria-label="Cerrar">' +
+    '<button class="icon-btn modal__x" data-close="1" aria-label="Cerrar">' +
     '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
     "</button></div>";
 
@@ -260,31 +268,37 @@
 
     const stones = p.piedras || [];
     const piezas = p.piezas || [];
+    const cat = CATEGORIAS.find((c) => c.id === p.categoria);
 
+    /* Dos columnas en pantalla ancha, una debajo de otra en el celular.
+       La foto se encuadra dentro de una altura fija: si crece libre,
+       empuja la descripción y las opciones fuera de la ventana. */
     const html = headHTML(p.nombre) +
-      '<div class="panel__body">' +
-        '<img class="detail__img" src="' + p.img + '" alt="' + esc(p.nombre) + '" width="760" height="1351">' +
-        '<p class="eyebrow">' + esc((CATEGORIAS.find((c) => c.id === p.categoria) || {}).nombre || "") + "</p>" +
-        '<h3 class="detail__name">' + esc(p.nombre) + "</h3>" +
-        '<p class="detail__price">' + money(p.precio) + "</p>" +
-        '<p class="detail__desc">' + esc(p.desc) + "</p>" +
-        '<dl class="detail__spec"><dt>Material</dt><dd>' + esc(p.material) + "</dd></dl>" +
-        (piezas.length
-          ? '<dl class="detail__spec"><dt>Incluye</dt><dd>' + esc(piezas.join(" · ")) + "</dd></dl>"
-          : "") +
-        (stones.length
-          ? '<div class="field"><span class="field__label" id="lblPiedra">Color de piedra</span>' +
-            '<div class="chips" role="group" aria-labelledby="lblPiedra">' +
-            stones.map((s, i) =>
-              '<button type="button" class="chip" data-stone="' + esc(s) + '" aria-pressed="' + (i === 0) + '">' +
-              '<span class="dot" style="background:' + (STONE_HEX[s] || "#555") + '"></span>' + esc(s) +
-              "</button>"
-            ).join("") + "</div></div>"
-          : "") +
-        '<p class="note">' + esc(IVA_NOTE) + "</p>" +
+      '<div class="panel__body detail">' +
+        '<div class="detail__media"><img src="' + p.img + '" alt="' + esc(p.nombre) + '" width="760" height="1351"></div>' +
+        '<div class="detail__info">' +
+          '<p class="detail__cat">' + esc(cat ? cat.nombre : p.categoria) + "</p>" +
+          '<h3 class="detail__name">' + esc(p.nombre) + "</h3>" +
+          '<p class="detail__price">' + money(p.precio) + "</p>" +
+          '<p class="detail__desc">' + esc(p.desc) + "</p>" +
+          '<dl class="detail__spec"><dt>Material</dt><dd>' + esc(p.material) + "</dd></dl>" +
+          (piezas.length
+            ? '<dl class="detail__spec"><dt>Incluye</dt><dd>' + esc(piezas.join(" · ")) + "</dd></dl>"
+            : "") +
+          (stones.length
+            ? '<div class="field"><span class="field__label" id="lblPiedra">Color de piedra</span>' +
+              '<div class="chips" role="group" aria-labelledby="lblPiedra">' +
+              stones.map((sn, i) =>
+                '<button type="button" class="chip" data-stone="' + esc(sn) + '" aria-pressed="' + (i === 0) + '">' +
+                '<span class="dot" style="background:' + (STONE_HEX[sn] || "#555") + '"></span>' + esc(sn) +
+                "</button>"
+              ).join("") + "</div></div>"
+            : "") +
+          '<p class="note">' + esc(IVA_NOTE) + "</p>" +
+        "</div>" +
       "</div>" +
       '<div class="panel__foot">' +
-        '<button class="btn btn--block" id="addBtn" data-autofocus>Agregar al carrito</button>' +
+        '<button class="btn btn--block" id="addBtn" data-autofocus><span>Agregar al carrito</span></button>' +
       "</div>";
 
     openLayer(html, (panel) => {
@@ -302,7 +316,7 @@
         addToCart(p.id, chosen, 1);
         openCart();
       });
-    });
+    }, "wide");
   }
 
   /* ============================================================
@@ -371,7 +385,7 @@
   }
 
   function renderCartPanel() {
-    const panel = $(".panel", layer);
+    const panel = $(".modal", layer);
     if (!panel || !panel.dataset.cart) return;
     $(".panel__body", panel).innerHTML = cartLinesHTML();
     $(".panel__foot", panel).innerHTML = cartFootHTML();
@@ -583,7 +597,7 @@
   }
 
   function setPanel(title, body, foot, onMount) {
-    const panel = $(".panel", layer);
+    const panel = $(".modal", layer);
     if (!panel) return;
     delete panel.dataset.cart;
     panel.innerHTML = headHTML(title) +
