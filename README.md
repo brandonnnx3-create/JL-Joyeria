@@ -1,4 +1,4 @@
-# RJ Joyería — sitio web
+# Romero Joyería — sitio web
 
 Catálogo online con carrito y checkout que termina en un pedido por WhatsApp.
 Es un sitio estático: HTML, CSS y JavaScript, sin dependencias ni compilación.
@@ -46,6 +46,24 @@ precio: 18500,     // se muestra como $18.500
 Inventé los nombres de línea (Aura, Quadra, Marquise, Sello) y las descripciones
 a partir de lo que se ve en las fotos. Revisalos: yo no sé si el aro es a presión
 o a rosca, si la cadena mide 45 cm, ni de qué material es realmente el baño.
+
+---
+
+## El logo
+
+El logo está en `img/logo.png`, recortado en círculo con fondo transparente
+para que se apoye sobre el negro del sitio sin recuadro. De ahí salen también
+`img/favicon-32.png` (el ícono de la pestaña) y `img/icono-180.png` (el ícono
+al agregar el sitio a la pantalla de inicio en el celular).
+
+Los dorados del sitio (`--gold`, `--gold-lt`, `--gold-dim` en `css/styles.css`)
+se ajustaron a los tonos del propio logo, que son más cálidos que un dorado
+estándar.
+
+**El archivo original mide 162 × 176 px.** Alcanza para el header y los íconos,
+pero es poco para usarlo en grande: una portada, un banner o una impresión. Si
+tenés el archivo original del diseñador (`.ai`, `.svg`, `.pdf` o un PNG grande),
+reemplazalo y queda mejor en todos lados.
 
 ---
 

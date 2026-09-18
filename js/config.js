@@ -19,7 +19,7 @@ const CONFIG = {
   whatsapp: "PONE_TU_NUMERO",
 
   /* --- DATOS DE LA MARCA ------------------------------------ */
-  marca: "RJ Joyería",
+  marca: "Romero Joyería",
   instagram: "",            // ej: "rj.joyeria" (sin @). Vacío = no se muestra.
   email: "",                // ej: "hola@rjjoyeria.com". Vacío = no se muestra.
   ciudad: "Buenos Aires, Argentina",

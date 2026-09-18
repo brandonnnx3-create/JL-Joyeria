@@ -12,10 +12,10 @@
   --ink-3:     #1C1A1E;
   --line:      #2A262C;
 
-  /* Dorados: oro viejo, no amarillo saturado. */
-  --gold:      #C9A227;
-  --gold-lt:   #E8CE83;
-  --gold-dim:  #8A6F1E;
+  /* Dorados tomados del propio logo: cálidos, tirando a bronce. */
+  --gold:      #C49A46;
+  --gold-lt:   #E4C88A;
+  --gold-dim:  #8C622A;
 
   /* Neutros con sesgo cálido hacia el dorado. */
   --bone:      #EDE7DC;
@@ -116,24 +116,22 @@ h1, h2, h3, .serif {
 }
 
 .brand__mark {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  font-family: "Bodoni Moda", Georgia, serif;
-  font-size: .95rem;
-  letter-spacing: .04em;
+  width: 46px;
+  height: 46px;
+  display: block;
+  border-radius: 50%;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
+.footer .brand__mark { width: 62px; height: 62px; }
+
 .brand__name {
   font-family: "Bodoni Moda", Georgia, serif;
-  font-size: 1.12rem;
-  letter-spacing: .13em;
+  font-size: 1.06rem;
+  letter-spacing: .15em;
   text-transform: uppercase;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .brand__tag {
@@ -1039,7 +1037,8 @@ h1, h2, h3, .serif {
   .header__bar { height: 60px; }
   .catbar { top: calc(60px + env(safe-area-inset-top, 0px)); }
   #catalogo { scroll-margin-top: calc(118px + env(safe-area-inset-top, 0px)); }
-  .brand__name { font-size: 1rem; }
+  .brand__name { font-size: .94rem; }
+  .brand__mark { width: 40px; height: 40px; }
   .section { padding-block: 38px 56px; }
   .footer__grid { grid-template-columns: 1fr; }
   .card__view { display: none; }
