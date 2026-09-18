@@ -8,6 +8,21 @@
 (function () {
   "use strict";
 
+  /* ============================================================
+     VERSIÓN ACTIVA
+     Las dos propuestas comparten catálogo, carrito y checkout.
+     Sólo cambian las clases del catálogo y el movimiento, que se
+     eligen acá según el data-tema del <html> de cada página.
+     ============================================================ */
+
+  const TEMA = document.documentElement.dataset.tema === "oscura" ? "oscura" : "clara";
+
+  const T = TEMA === "oscura"
+    ? { caja: "div", shot: "card__media", tag: "card__flag",
+        act: "card__view", filtro: "cat", filtroN: "cat__n", metaArriba: true }
+    : { caja: "span", shot: "shot card__shot", tag: "card__tag",
+        act: "card__act", filtro: "filter", filtroN: "filter__n", metaArriba: false };
+
   /* ---------- Utilidades ---------- */
 
   const $  = (sel, ctx) => (ctx || document).querySelector(sel);
@@ -160,9 +175,9 @@
     const bar = $("#catbar");
     bar.innerHTML = CATEGORIAS.filter((c) => countIn(c.id) > 0)
       .map((c) =>
-        '<button class="filter" role="tab" data-cat="' + c.id + '" aria-selected="' +
+        '<button class="' + T.filtro + '" role="tab" data-cat="' + c.id + '" aria-selected="' +
         (c.id === activeCat) + '">' + esc(c.nombre) +
-        '<span class="filter__n">' + countIn(c.id) + "</span></button>"
+        '<span class="' + T.filtroN + '">' + countIn(c.id) + "</span></button>"
       ).join("");
 
     const list = $("#footerCats");
@@ -178,31 +193,36 @@
     if (!list.length) return "";
     const shown = list.slice(0, 6);
     const rest = list.length - shown.length;
-    return '<span class="card__stones">' +
+    return "<" + T.caja + ' class="card__stones">' +
       shown.map((s) =>
         '<span class="dot" style="background:' + (STONE_HEX[s] || "#555") +
         '" title="' + esc(s) + '"></span>'
       ).join("") +
       (rest > 0 ? '<span class="dot--more">+' + rest + "</span>" : "") +
-      "</span>";
+      "</" + T.caja + ">";
   }
 
   function cardHTML(p, i) {
     const cat = CATEGORIAS.find((c) => c.id === p.categoria);
+    const nombreCat = esc(cat ? cat.nombre : p.categoria);
+    const B = T.caja;
+
+    const meta  = '<span class="card__meta">' + nombreCat + "</span>";
+    const name  = '<span class="card__name">' + esc(p.nombre) + "</span>";
+    const price = '<span class="card__price">' + money(p.precio) + "</span>";
+
     return (
       '<button class="card" data-product="' + p.id + '" style="--i:' + (i % 9) + '"' +
       ' aria-label="Ver ' + esc(p.nombre) + '">' +
-      '<span class="shot card__shot">' +
+      "<" + B + ' class="' + T.shot + '">' +
         '<img src="' + p.img + '" alt="' + esc(p.nombre) + '" loading="lazy" width="760" height="1351">' +
-        (p.etiqueta ? '<span class="card__tag">' + esc(p.etiqueta) + "</span>" : "") +
-        '<span class="card__act">Ver pieza</span>' +
-      "</span>" +
-      '<span class="card__body">' +
-        '<span class="card__name">' + esc(p.nombre) + "</span>" +
-        '<span class="card__price">' + money(p.precio) + "</span>" +
-        '<span class="card__meta">' + esc(cat ? cat.nombre : p.categoria) + "</span>" +
+        (p.etiqueta ? '<span class="' + T.tag + '">' + esc(p.etiqueta) + "</span>" : "") +
+        '<span class="' + T.act + '">Ver pieza</span>' +
+      "</" + B + ">" +
+      "<" + B + ' class="card__body">' +
+        (T.metaArriba ? meta + name + price : name + price + meta) +
         stoneDots(p) +
-      "</span></button>"
+      "</" + B + "></button>"
     );
   }
 
@@ -226,7 +246,7 @@
 
   function selectCat(id) {
     activeCat = id;
-    $$(".filter").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.cat === id)));
+    $$("." + T.filtro.split(" ")[0]).forEach((b) => b.setAttribute("aria-selected", String(b.dataset.cat === id)));
     renderGrid();
   }
 
@@ -297,6 +317,12 @@
     el.textContent = n;
     el.setAttribute("data-empty", String(n === 0));
 
+    if (TEMA === "oscura" && n > lastCount && !quieto) {
+      const btn = $("#openCart");
+      btn.classList.remove("bump");
+      void btn.offsetWidth;            /* reinicia la animación */
+      btn.classList.add("bump");
+    }
     lastCount = n;
   }
 
@@ -757,16 +783,83 @@
     cards.forEach((c) => verObs.observe(c));
   }
 
-  /* El header sólo se separa del fondo cuando la página se movió. */
+  /* --- Desplazamiento suave de las fotos (sólo versión oscura) ---
+     Cada foto se mueve un poco más lento que la página. El recorte lo
+     absorbe el alto extra que las imágenes tienen en el CSS. */
+
+  const capas = TEMA === "oscura" && !quieto ? $$("[data-par]") : [];
+  let tic = false;
+
+  function moverCapas() {
+    const vh = window.innerHeight;
+    capas.forEach((capa) => {
+      const img = capa.querySelector("img");
+      if (!img) return;
+      const r = capa.getBoundingClientRect();
+      if (r.bottom < -120 || r.top > vh + 120) return;
+
+      const centro = r.top + r.height / 2 - vh / 2;
+      let p = centro / ((vh + r.height) / 2);
+      p = p < -1 ? -1 : p > 1 ? 1 : p;
+
+      const amp = parseFloat(capa.dataset.par) || 0.07;
+      img.style.transform =
+        "translate3d(0," + (-amp * 100 + p * amp * 100).toFixed(2) + "%,0)";
+    });
+    tic = false;
+  }
+
+  /* --- Header, progreso y botón de volver arriba --- */
+
   const header = $("#header");
+  const barra = $("#progress");
+  const arriba = $("#toTop");
 
   function alScrollear() {
-    if (!header) return;
     const y = window.pageYOffset || document.documentElement.scrollTop;
-    header.classList.toggle("is-stuck", y > 8);
+
+    if (header) header.classList.toggle("is-stuck", y > (TEMA === "oscura" ? 12 : 8));
+
+    if (barra) {
+      const alto = document.documentElement.scrollHeight - window.innerHeight;
+      barra.style.transform = "scaleX(" + (alto > 0 ? Math.min(y / alto, 1) : 0) + ")";
+    }
+
+    if (arriba) {
+      const visible = y > 700;
+      if (visible && arriba.hidden) arriba.hidden = false;
+      arriba.classList.toggle("show", visible);
+    }
+
+    if (capas.length && !tic) { tic = true; requestAnimationFrame(moverCapas); }
   }
 
   window.addEventListener("scroll", alScrollear, { passive: true });
+  window.addEventListener("resize", alScrollear, { passive: true });
+
+  if (arriba) {
+    arriba.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: quieto ? "auto" : "smooth" });
+    });
+  }
+
+  /* --- Cinta deslizante (sólo versión oscura) ---
+     El contenido se escribe dos veces: cuando la animación llegó a la
+     mitad, la segunda copia está donde estaba la primera, así el bucle
+     no tiene corte. */
+
+  const cinta = $("#ticker");
+  if (cinta) {
+    const bloque = [
+      "Calidad y elegancia en cada detalle",
+      "Plata 925 de ley",
+      "Envíos a todo el país",
+      "Revisada una por una",
+      "El lujo está en los detalles",
+    ].map((f) => '<span class="ticker__item">' + esc(f) + "</span>").join("");
+    cinta.innerHTML = bloque + bloque;
+  }
+
   alScrollear();
 
   /* ============================================================
@@ -793,6 +886,27 @@
         });
       }
     );
+  }
+
+  /* ============================================================
+     COMPARADOR DE PROPUESTAS
+     Sólo existe mientras se presentan las dos versiones. Si el
+     visitante la oculta, queda oculta en ese navegador.
+     ============================================================ */
+
+  const vs = $("#vs");
+  if (vs) {
+    try {
+      if (localStorage.getItem("rj_vs_oculto") === "1") vs.hidden = true;
+    } catch (e) { /* almacenamiento bloqueado: la barra se muestra */ }
+
+    const cerrar = $("#vsX", vs);
+    if (cerrar) {
+      cerrar.addEventListener("click", () => {
+        vs.hidden = true;
+        try { localStorage.setItem("rj_vs_oculto", "1"); } catch (e) {}
+      });
+    }
   }
 
   loadCart();

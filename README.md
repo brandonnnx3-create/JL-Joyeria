@@ -1,8 +1,39 @@
 # Romero Joyería — sitio web
 
-Catálogo online con carrito y checkout que termina en un pedido por WhatsApp.
-Es un sitio estático: HTML, CSS y JavaScript, sin dependencias ni compilación.
-Se abre con doble clic en `index.html` y se publica en cualquier hosting.
+**Hay dos propuestas de diseño listas para presentar.** Las dos son el mismo
+sitio: mismo catálogo, mismo carrito, mismo checkout por WhatsApp. Sólo cambia
+la piel.
+
+| | Archivo | Dirección visual |
+|---|---|---|
+| **Propuesta A** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. Fotos en arco, secciones editoriales numeradas, cinta deslizante y desplazamiento suave de las imágenes. |
+| **Propuesta B** | `clara.html` | Marfil, carbón y champagne como acento. La dirección que usan las casas de joyería internacionales: base clara y oscuro sólo para momentos editoriales. Más silencio, menos movimiento. |
+
+En el sitio publicado son:
+
+- Propuesta A → `https://TU-USUARIO.github.io/JL-Joyeria/`
+- Propuesta B → `https://TU-USUARIO.github.io/JL-Joyeria/clara.html`
+
+Abajo de cada página hay una barra flotante para pasar de una a la otra durante
+la presentación. El carrito se conserva al cambiar, así se puede mostrar el
+mismo pedido en las dos.
+
+---
+
+## Cuando el cliente elija una
+
+Son tres pasos, todos manuales y reversibles con `git`:
+
+1. **Si gana la B**, renombrá `clara.html` a `index.html` (reemplazando la A) y
+   dentro del archivo cambiá `css/clara.css` por el nombre que quieras.
+2. **Borrá la versión descartada**: su `.html` y su `.css` en `css/`.
+3. **Sacá el comparador**: borrá `css/comparador.css`, la línea
+   `<link rel="stylesheet" href="css/comparador.css">` y el bloque
+   `<nav class="vs">` del archivo que quede.
+
+En `js/app.js` no hay que tocar nada: la versión activa se define con el
+atributo `data-tema` de la etiqueta `<html>` (`oscura` o `clara`), y el resto
+—catálogo, carrito y checkout— es común a las dos.
 
 ---
 
@@ -189,26 +220,24 @@ Los dos sirven el sitio por HTTPS sin configurar nada.
 ## Estructura
 
 ```
-index.html              La página: hero, secciones destacadas, catálogo, pie
-css/styles.css          Estilos (paleta negro y dorado) y animaciones
+index.html              Propuesta A (oscura)
+clara.html              Propuesta B (clara)
+css/oscura.css          Estilos de la A
+css/clara.css           Estilos de la B
+css/comparador.css      La barra para comparar (se borra al elegir)
 js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
-js/products.js          ← EL CATÁLOGO
-js/app.js               Carrito, checkout y animaciones (no hace falta tocarlo)
+js/products.js          ← EL CATÁLOGO (lo usan las dos)
+js/app.js               Carrito, checkout y catálogo (lo usan las dos)
 img/logo.png            El logo, recortado en círculo
-img/productos/          Las 27 fotos, renombradas por categoría
+img/productos/          Las 27 fotos
 .github/workflows/      Publica el sitio solo en cada push
 ```
 
-## El sistema de diseño
+**El catálogo y el checkout son compartidos.** Si cambiás un precio en
+`js/products.js`, cambia en las dos propuestas. Si aparece un error en el
+carrito, se arregla una sola vez.
 
-### Color
-
-La base es neutra y cálida. El champagne es **acento, nunca color dominante**:
-aparece en volantas, en una palabra por título y poco más. El único color
-saturado de la página tiene que ser el de las piedras.
-
-| Token | Para qué |
-|---|---|
+---|---|
 | `--ivory` `#F6F3EE` | Fondo de la página |
 | `--ivory-2` `--ivory-3` | Superficies y fondo de las fotos |
 | `--sand` `--sand-2` | Reglas y bordes |

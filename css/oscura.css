@@ -1,0 +1,1494 @@
+/* ============================================================
+   ROMERO JOYERÍA — HOJA DE ESTILOS
+   Paleta negra y dorada, de tema único: el sitio se ve igual
+   con el celular en modo claro o en modo oscuro, a propósito.
+   ============================================================ */
+
+:root {
+  /* Negros con una mínima desviación fría, para que no se vean apagados. */
+  --ink:       #0A0A0C;
+  --ink-2:     #111015;
+  --ink-3:     #191820;
+  --line:      #262433;
+  --line-2:    #373446;
+
+  /* Azul de medianoche: el tercer color. Nunca se lee como "azul",
+     se lee como un negro con profundidad. Las secciones alternan
+     entre el negro y este azul para que el fondo no sea plano. */
+  --navy:      #04060E;
+  --navy-2:    #060A14;
+  --navy-3:    #091020;
+
+  /* Dorados muestreados del propio logo: cálidos, tirando a bronce. */
+  --gold:      #C49A46;
+  --gold-lt:   #E4C88A;
+  --gold-dim:  #8C622A;
+
+  /* Neutros con sesgo cálido hacia el dorado. */
+  --bone:      #EDE7DC;
+  --muted:     #968D7E;
+  --muted-2:   #6B6459;
+
+  --ok:        #6FAE7C;
+  --warn:      #D9A441;
+  --err:       #D06A62;
+
+  /* Cada forma tiene su propio canto según el papel que cumple.
+     Un solo radio para todo aplana la jerarquía. */
+  --r-xs:      6px;    /* etiquetas y sellos */
+  --r-sm:      10px;   /* campos y cuadros chicos */
+  --r-md:      16px;   /* tarjetas del catálogo */
+  --r-lg:      26px;   /* fotos grandes y paneles */
+  --r-pill:    999px;  /* botones y fichas */
+  --radius:    var(--r-sm);
+  --maxw:      1280px;
+  --hh:        68px;                 /* alto del header */
+  --cbh:       58px;                 /* alto de la barra de categorías */
+
+  --shadow:    0 18px 48px rgba(0,0,0,.55);
+  --ease:      cubic-bezier(.22,.61,.36,1);
+  --ease-out:  cubic-bezier(.16,1,.3,1);
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--ink);
+  /* Dos auroras muy tenues rompen el plano sin que se note de dónde
+     sale la luz. Se quedan fijas mientras la página se desplaza. */
+  background-image:
+    radial-gradient(ellipse 90% 55% at 12% 0%,   rgba(8,13,26,.72), transparent 62%),
+    radial-gradient(ellipse 70% 45% at 92% 62%,  rgba(5,9,19,.60), transparent 58%),
+    radial-gradient(ellipse 60% 40% at 50% 104%, rgba(140,98,42,.08), transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--bone);
+  font-family: "Jost", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body.no-scroll { overflow: hidden; }
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+h1, h2, h3, .serif {
+  font-family: "Bodoni Moda", "Didot", Georgia, serif;
+  font-weight: 400;
+  text-wrap: balance;
+  margin: 0;
+  letter-spacing: .01em;
+}
+
+.eyebrow {
+  font-size: .688rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin: 0;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* ============================================================
+   APARICIONES AL HACER SCROLL
+   Sin JavaScript nada se oculta: la clase .js la agrega el
+   propio script, así el contenido siempre se ve.
+   ============================================================ */
+
+/* Grano: una capa de ruido finísima sobre toda la página. Es lo que
+   hace que un fondo oscuro se lea como tela o papel en lugar de como
+   un color plano. Va por encima del contenido pero por debajo del
+   header y de los paneles, y no intercepta clics. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Viñeta: oscurece apenas los bordes y empuja la mirada al centro. */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse 78% 62% at 50% 45%, transparent 52%, rgba(0,0,0,.42));
+}
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity .85s var(--ease-out), transform .85s var(--ease-out);
+}
+
+.js .hero__el {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: rise .95s var(--ease-out) forwards;
+  animation-delay: calc(var(--d) * 120ms + 120ms);
+}
+
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 60;
+  background: rgba(4,6,14,.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: background .35s var(--ease), border-color .35s var(--ease);
+}
+
+.header.is-stuck {
+  background: rgba(4,6,14,.95);
+  border-bottom-color: var(--line);
+}
+
+.header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: var(--hh);
+}
+
+.header__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  border-radius: 0 var(--r-pill) var(--r-pill) 0;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold-lt));
+}
+
+.brand { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
+
+.brand__mark {
+  width: 46px;
+  height: 46px;
+  display: block;
+  border-radius: 50%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.footer .brand__mark { width: 62px; height: 62px; }
+
+.brand__name {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.06rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.brand__tag {
+  display: block;
+  font-family: "Jost", sans-serif;
+  font-size: .563rem;
+  letter-spacing: .24em;
+  color: var(--muted-2);
+  text-transform: uppercase;
+}
+
+.header__nav { display: flex; gap: 28px; }
+
+.header__nav a {
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: relative;
+  padding-block: 4px;
+  transition: color .22s var(--ease);
+}
+
+.header__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform .35s var(--ease-out);
+}
+
+.header__nav a:hover { color: var(--bone); }
+.header__nav a:hover::after { transform: scaleX(1); transform-origin: 0 50%; }
+
+.header__actions { display: flex; align-items: center; gap: 6px; }
+
+.icon-btn {
+  appearance: none;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--bone);
+  cursor: pointer;
+  padding: 9px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+
+.icon-btn:hover { color: var(--gold); border-color: var(--line); }
+
+.cart-btn { position: relative; }
+
+.cart-btn__count {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: .625rem;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-btn__count[data-empty="true"] { display: none; }
+
+.cart-btn.bump { animation: bump .45s var(--ease); }
+
+@keyframes bump {
+  0%, 100% { transform: scale(1); }
+  35%      { transform: scale(1.22); }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(170deg, var(--navy-2) 0%, var(--navy) 42%, transparent 88%);
+}
+
+/* Halo dorado difuso: da profundidad sin cargar la pantalla. */
+.hero__glow {
+  position: absolute;
+  top: -22%;
+  right: -12%;
+  width: min(760px, 88vw);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(196,154,70,.16), rgba(196,154,70,.04) 46%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.02fr .98fr;
+  gap: 60px;
+  align-items: center;
+  padding-block: 76px 104px;
+}
+
+.hero__title {
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  line-height: 1.03;
+  margin-block: 22px 24px;
+}
+
+.hero__title em {
+  font-style: italic;
+  color: var(--gold-lt);
+  display: inline-block;
+}
+
+.hero__lead {
+  color: var(--muted);
+  font-size: 1.055rem;
+  max-width: 45ch;
+  margin-block: 0 34px;
+}
+
+.hero__cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* --- Composición de la foto --- */
+
+.hero__art { position: relative; }
+
+/* El marco y la foto se rematan en arco, como el nicho de una vitrina.
+   El radio se limita solo a la mitad del ancho, así queda un
+   semicírculo exacto sin importar el tamaño de pantalla. */
+.hero__frame {
+  position: relative;
+  border: 1px solid var(--gold-dim);
+  padding: 14px;
+  border-radius: 999px 999px var(--r-lg) var(--r-lg);
+}
+
+.hero__shot {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--ink-2);
+  border-radius: 999px 999px var(--r-md) var(--r-md);
+}
+
+.hero__shot img {
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  object-position: center 42%;
+  will-change: transform;
+}
+
+.hero__chip {
+  position: absolute;
+  left: -26px;
+  bottom: 34px;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, var(--navy-3), var(--navy));
+  border: 1px solid var(--gold-dim);
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 2px;
+  box-shadow: var(--shadow);
+}
+
+.hero__chip-n {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.hero__chip-t {
+  font-size: .563rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  z-index: 1;
+  font-size: .563rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.hero__scroll i {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(var(--gold-dim), transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__scroll i::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 12px;
+  background: var(--gold-lt);
+  animation: drop 2.1s var(--ease) infinite;
+}
+
+@keyframes drop {
+  0%       { transform: translateY(-14px); opacity: 0; }
+  35%, 65% { opacity: 1; }
+  100%     { transform: translateY(38px); opacity: 0; }
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+.btn {
+  appearance: none;
+  font-family: "Jost", sans-serif;
+  font-size: .75rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 15px 32px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  border: 1px solid var(--gold);
+  background: var(--gold);
+  color: var(--ink);
+  transition: background .25s var(--ease), color .25s var(--ease),
+              border-color .25s var(--ease), opacity .2s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.btn:hover { background: var(--gold-lt); border-color: var(--gold-lt); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--bone);
+  border-color: var(--line-2);
+}
+
+.btn--ghost:hover { border-color: var(--gold); color: var(--gold); background: transparent; }
+
+.btn--block { width: 100%; }
+
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:disabled:hover { background: var(--gold); border-color: var(--gold); }
+
+.btn .arrow { transition: transform .3s var(--ease-out); flex-shrink: 0; }
+.btn--arrow:hover .arrow { transform: translateX(5px); }
+
+/* ============================================================
+   CINTA DESLIZANTE
+   ============================================================ */
+
+.ticker {
+  border-block: 1px solid var(--line);
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-2) 50%, var(--navy) 100%);
+  overflow: hidden;
+  padding-block: 15px;
+}
+
+.ticker__track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: slide-x 38s linear infinite;
+}
+
+.ticker:hover .ticker__track { animation-play-state: paused; }
+
+.ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: 26px;
+  font-size: .72rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ticker__item::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  flex-shrink: 0;
+}
+
+@keyframes slide-x { to { transform: translateX(-50%); } }
+
+/* ============================================================
+   SECCIONES EDITORIALES
+   ============================================================ */
+
+.stories {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.story {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(32px, 5vw, 76px);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: clamp(60px, 8vw, 104px) 20px;
+  width: 100%;
+}
+
+/* Hilo dorado entre una sección y la siguiente. */
+.story + .story::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-2) 22%, var(--line-2) 78%, transparent);
+}
+
+/* La sección del medio va sobre el azul, a ancho completo. */
+.stories .story--flip {
+  max-width: none;
+  padding-inline: max(20px, calc((100vw - var(--maxw)) / 2 + 20px));
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 50%, var(--navy-2), var(--navy) 78%);
+  border-block: 1px solid var(--line);
+}
+
+.story--flip::before { display: none; }
+
+.story--flip .story__media { order: 2; }
+
+.story__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+/* La del medio invierte el remate, para que las tres no se lean igual. */
+.story--flip .story__media { border-radius: var(--r-lg) var(--r-lg) 999px 999px; }
+
+.story__media img {
+  width: 100%;
+  height: 114%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* El número de sección, apoyado sobre la foto. */
+.story__n {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 2.1rem;
+  color: var(--bone);
+  text-shadow: 0 2px 16px rgba(0,0,0,.75);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.story__title {
+  font-size: clamp(1.85rem, 3.9vw, 2.9rem);
+  line-height: 1.1;
+  margin-block: 14px 18px;
+}
+
+.story__title em { font-style: italic; color: var(--gold-lt); }
+
+.story__text {
+  color: var(--muted);
+  max-width: 44ch;
+  margin-block: 0 24px;
+}
+
+.story__facts {
+  list-style: none;
+  padding: 0;
+  margin-block: 0 28px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.story__facts li {
+  font-size: .72rem;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.story__facts span {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.85rem;
+  color: var(--gold);
+  letter-spacing: 0;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.story__swatch {
+  list-style: none;
+  padding: 0;
+  margin-block: 0 28px;
+  display: flex;
+  gap: 9px;
+}
+
+.story__swatch li {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--c);
+  border: 1px solid rgba(237,231,220,.22);
+  transition: transform .25s var(--ease);
+}
+
+.story__swatch li:hover { transform: scale(1.18); }
+
+/* ============================================================
+   FRANJA DE FRASE
+   ============================================================ */
+
+.strip {
+  border-block: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 60% 140% at 50% 50%, var(--navy-3), var(--navy) 72%);
+  padding-block: 38px;
+}
+
+.strip .wrap {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.strip__rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+
+.strip__quote {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.16rem, 2.7vw, 1.75rem);
+  color: var(--gold-lt);
+  margin: 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CATEGORÍAS
+   ============================================================ */
+
+.catbar {
+  position: sticky;
+  top: calc(var(--hh) + env(safe-area-inset-top, 0px));
+  z-index: 50;
+  background: rgba(4,6,14,.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.catbar__scroll {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-block: 12px;
+}
+
+.catbar__scroll::-webkit-scrollbar { display: none; }
+
+.cat {
+  appearance: none;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-family: "Jost", sans-serif;
+  font-size: .75rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--r-pill);
+  transition: color .22s var(--ease), border-color .22s var(--ease);
+}
+
+.cat:hover { color: var(--bone); }
+.cat[aria-selected="true"] { color: var(--gold); border-color: var(--gold-dim); }
+
+.cat__n {
+  font-size: .625rem;
+  color: var(--muted-2);
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cat[aria-selected="true"] .cat__n { color: var(--gold-dim); }
+
+/* ============================================================
+   GRILLA DE PRODUCTOS
+   ============================================================ */
+
+#catalogo {
+  scroll-margin-top: calc(var(--hh) + var(--cbh) + env(safe-area-inset-top, 0px));
+}
+
+#coleccion {
+  scroll-margin-top: calc(var(--hh) + env(safe-area-inset-top, 0px));
+}
+
+.section { padding-block: 54px 78px; }
+
+.section__head { margin-bottom: 36px; }
+
+.section__title {
+  font-size: clamp(1.65rem, 3.4vw, 2.35rem);
+  margin-block: 9px 7px;
+}
+
+.section__desc { color: var(--muted); margin: 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px 22px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Entrada escalonada: cada tarjeta llega un instante después que la anterior. */
+.js .card {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.js .card.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+
+.card__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  transition: border-color .3s var(--ease), transform .45s var(--ease-out);
+}
+
+.card:hover .card__media { transform: translateY(-6px); }
+
+.card:hover .card__media { border-color: var(--gold-dim); }
+
+.card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s var(--ease-out), filter .4s var(--ease);
+  filter: saturate(.93);
+}
+
+.card:hover .card__media img { transform: scale(1.06); filter: saturate(1.03); }
+
+/* Velo que sube desde abajo al pasar el mouse. */
+.card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4,6,14,.88), transparent 52%);
+  opacity: 0;
+  transition: opacity .35s var(--ease);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.card:hover .card__media::after { opacity: 1; }
+
+.card__flag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(4,6,14,.90);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-lt);
+  font-size: .563rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.card__view {
+  position: absolute;
+  inset-inline: 10px;
+  bottom: 10px;
+  z-index: 2;
+  border: 1px solid var(--gold-dim);
+  background: rgba(4,6,14,.85);
+  color: var(--gold-lt);
+  font-size: .625rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 11px;
+  border-radius: var(--r-pill);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .3s var(--ease), transform .3s var(--ease-out);
+  backdrop-filter: blur(4px);
+}
+
+.card:hover .card__view,
+.card:focus-visible .card__view { opacity: 1; transform: translateY(0); }
+
+.card__body { padding-top: 15px; display: flex; flex-direction: column; gap: 5px; }
+
+.card__name {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.065rem;
+  line-height: 1.25;
+}
+
+.card__meta {
+  font-size: .688rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.card__price {
+  color: var(--gold);
+  font-size: .97rem;
+  font-variant-numeric: tabular-nums;
+  margin-top: 3px;
+}
+
+.card__stones { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid rgba(237,231,220,.28);
+}
+
+.dot--more {
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  font-size: .625rem;
+  color: var(--muted-2);
+  line-height: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-block: 70px;
+  color: var(--muted);
+}
+
+/* ============================================================
+   GARANTÍAS
+   ============================================================ */
+
+.promises {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding-block: 20px 86px;
+}
+
+.promise {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 22px 24px 24px;
+  background: linear-gradient(170deg, rgba(9,16,32,.5), transparent 70%);
+  transition: border-color .3s var(--ease);
+}
+
+.promise:hover { border-color: var(--gold-dim); }
+
+.promise__n {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: .82rem;
+  color: var(--gold);
+  letter-spacing: .1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.promise h3 { font-size: 1.14rem; margin-block: 9px 7px; }
+.promise p { color: var(--muted); font-size: .9rem; margin: 0; }
+
+/* ============================================================
+   VOLVER ARRIBA
+   ============================================================ */
+
+.totop {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 55;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-dim);
+  background: rgba(6,10,20,.93);
+  color: var(--gold);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease-out),
+              background .25s var(--ease), color .25s var(--ease);
+}
+
+.totop.show { opacity: 1; transform: none; }
+.totop:hover { background: var(--gold); color: var(--ink); }
+
+/* ============================================================
+   PANEL LATERAL (carrito, ficha, checkout)
+   ============================================================ */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(3px);
+  z-index: 90;
+  opacity: 0;
+  animation: fade .3s var(--ease) forwards;
+}
+
+@keyframes fade { to { opacity: 1; } }
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(440px, 100%);
+  background: linear-gradient(200deg, var(--navy-2), var(--navy) 60%);
+  border-left: 1px solid var(--line);
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  overflow: hidden;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  animation: slide .4s var(--ease-out) forwards;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@keyframes slide { to { transform: translateX(0); } }
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.panel__title {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.2rem;
+  letter-spacing: .04em;
+}
+
+.panel__body { flex: 1; overflow-y: auto; padding: 20px; }
+
+.panel__foot {
+  border-top: 1px solid var(--line);
+  padding: 20px;
+  flex-shrink: 0;
+  background: var(--navy-2);
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 14px;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.line:first-child { padding-top: 0; }
+
+.line__img {
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  width: 100%;
+  height: 100%;
+}
+
+.line__name {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: .99rem;
+  line-height: 1.3;
+}
+
+.line__opt {
+  font-size: .688rem;
+  color: var(--muted-2);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.line__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.line__row + .line__row { margin-top: 6px; }
+
+.qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.qty button {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--bone);
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: color .18s var(--ease);
+}
+
+.qty button:hover { color: var(--gold); }
+
+.qty span {
+  min-width: 28px;
+  text-align: center;
+  font-size: .82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.line__price { color: var(--gold); font-size: .9rem; font-variant-numeric: tabular-nums; }
+
+.link-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--muted-2);
+  font-family: inherit;
+  font-size: .688rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  transition: color .18s var(--ease);
+}
+
+.link-btn:hover { color: var(--err); }
+
+.totals { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+.totals__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .845rem;
+  color: var(--muted);
+}
+
+.totals__row--big {
+  font-size: 1.06rem;
+  color: var(--bone);
+  border-top: 1px solid var(--line);
+  padding-top: 11px;
+  margin-top: 3px;
+}
+
+.totals__row--big strong {
+  color: var(--gold);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.totals__row span:last-child { font-variant-numeric: tabular-nums; }
+
+.note { font-size: .72rem; color: var(--muted-2); line-height: 1.5; margin-block: 12px 0; }
+
+.detail__img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  margin-bottom: 20px;
+}
+
+.detail__name {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-size: 1.65rem;
+  line-height: 1.15;
+  margin-block: 7px 8px;
+}
+
+.detail__price {
+  color: var(--gold);
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+}
+
+.detail__desc { color: var(--muted); margin-bottom: 20px; }
+
+.detail__spec {
+  display: flex;
+  gap: 10px;
+  font-size: .78rem;
+  color: var(--muted-2);
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-bottom: 20px;
+}
+
+.detail__spec dt { letter-spacing: .13em; text-transform: uppercase; flex-shrink: 0; }
+.detail__spec dd { margin: 0; color: var(--muted); }
+
+.field { margin-bottom: 18px; }
+
+.field__label {
+  display: block;
+  font-size: .688rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 9px;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.chip {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: .75rem;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: color .18s var(--ease), border-color .18s var(--ease);
+}
+
+.chip:hover { color: var(--bone); border-color: var(--muted-2); }
+.chip[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+
+.steps { display: flex; gap: 5px; margin-bottom: 22px; }
+
+.steps__item {
+  flex: 1;
+  font-size: .625rem;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  border-top: 2px solid var(--line);
+  padding-top: 8px;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+
+.steps__item[data-state="active"] { color: var(--gold); border-color: var(--gold); }
+.steps__item[data-state="done"]   { color: var(--muted); border-color: var(--gold-dim); }
+
+.input, .select, .textarea {
+  width: 100%;
+  background: rgba(2,4,9,.6);
+  border: 1px solid var(--line);
+  color: var(--bone);
+  font-family: inherit;
+  font-size: .93rem;
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  transition: border-color .18s var(--ease);
+}
+
+.input:focus, .select:focus, .textarea:focus { border-color: var(--gold-dim); outline: none; }
+.input::placeholder, .textarea::placeholder { color: var(--muted-2); }
+.textarea { resize: vertical; min-height: 78px; }
+
+.input[aria-invalid="true"], .select[aria-invalid="true"] { border-color: var(--err); }
+
+.error { color: var(--err); font-size: .72rem; margin-top: 5px; display: block; }
+
+.radio-set { display: flex; flex-direction: column; gap: 8px; }
+
+.radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  border: 1px solid var(--line);
+  padding: 14px;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  transition: border-color .18s var(--ease);
+}
+
+.radio:hover { border-color: var(--muted-2); }
+.radio:has(input:checked) { border-color: var(--gold-dim); }
+.radio input { accent-color: var(--gold); margin-top: 3px; flex-shrink: 0; }
+
+.radio__title { font-size: .9rem; display: block; }
+.radio__sub { font-size: .72rem; color: var(--muted-2); display: block; margin-top: 2px; }
+
+.review {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 17px;
+  margin-bottom: 18px;
+  background: rgba(2,4,9,.55);
+}
+
+.review__h {
+  font-size: .625rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 11px;
+}
+
+.review__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: .82rem;
+  padding-block: 4px;
+  color: var(--muted);
+}
+
+.review__row span:last-child { color: var(--bone); text-align: right; }
+
+.done { text-align: center; padding-block: 20px; }
+
+.done__mark {
+  width: 54px;
+  height: 54px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  color: var(--gold);
+  animation: pop .5s var(--ease-out);
+}
+
+@keyframes pop {
+  from { transform: scale(.7); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+.done__title { font-family: "Bodoni Moda", Georgia, serif; font-size: 1.45rem; margin-bottom: 10px; }
+.done__text { color: var(--muted); font-size: .9rem; margin-bottom: 22px; }
+
+.warnbox {
+  border: 1px solid var(--warn);
+  border-radius: var(--r-sm);
+  background: rgba(217,164,65,.08);
+  padding: 14px;
+  font-size: .8rem;
+  color: var(--bone);
+  margin-bottom: 18px;
+  text-align: left;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.footer {
+  position: relative;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+  padding-block: 56px 30px;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 44px;
+}
+
+.footer__quote {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-style: italic;
+  font-size: 1.32rem;
+  color: var(--gold-lt);
+  margin-block: 18px 0;
+  max-width: 24ch;
+  line-height: 1.35;
+}
+
+.footer__h {
+  font-size: .688rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--bone);
+  margin-bottom: 15px;
+}
+
+.footer__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+
+.footer__list a, .footer__list li {
+  color: var(--muted);
+  font-size: .845rem;
+  transition: color .2s var(--ease);
+}
+
+.footer__list a:hover { color: var(--gold); }
+
+.footer__bottom {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  /* El botón de volver arriba flota sobre esta esquina: le dejamos
+     lugar para que no se monte sobre el texto. */
+  padding-right: 64px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: var(--muted-2);
+  font-size: .75rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1080px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .header__nav { display: none; }
+}
+
+@media (max-width: 900px) {
+  .hero__inner { grid-template-columns: 1fr; gap: 50px; padding-block: 52px 88px; }
+  .hero__art { max-width: 420px; }
+  .hero__chip { left: auto; right: -14px; bottom: -22px; width: 92px; height: 92px; }
+  .story { grid-template-columns: 1fr; gap: 30px; }
+  .story--flip .story__media { order: 0; }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer__quote { max-width: none; }
+  .promises { grid-template-columns: 1fr; gap: 22px; padding-bottom: 64px; }
+  .strip .wrap { gap: 16px; }
+}
+
+@media (max-width: 680px) {
+  :root { --hh: 62px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; }
+  .brand__name { font-size: .94rem; }
+  .brand__mark { width: 40px; height: 40px; }
+  .section { padding-block: 40px 58px; }
+  .footer__grid { grid-template-columns: 1fr; }
+  .card__view { display: none; }
+  .strip__rule { display: none; }
+  .hero__scroll { display: none; }
+  .story__n { font-size: 1.7rem; }
+}
+
+@media (max-width: 420px) {
+  .wrap, .story { padding-inline: 16px; }
+  .panel__head, .panel__body, .panel__foot { padding: 16px; }
+  .hero__title { font-size: 2.35rem; }
+  .story__facts { gap: 22px; }
+}
+
+/* ============================================================
+   MOVIMIENTO REDUCIDO
+   Si el sistema pide menos animación, todo queda quieto y visible.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .js .reveal, .js .hero__el, .js .card { opacity: 1 !important; transform: none !important; }
+  .ticker__track { animation: none; }
+  .scrim, .panel { opacity: 1; transform: none; }
+}
