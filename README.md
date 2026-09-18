@@ -199,6 +199,28 @@ img/productos/          Las 27 fotos, renombradas por categoría
 .github/workflows/      Publica el sitio solo en cada push
 ```
 
+## Los colores del fondo
+
+La paleta tiene tres colores, no dos: negro, dorado y un **azul de medianoche**
+(`--navy`, `--navy-2`, `--navy-3` en `css/styles.css`). El azul nunca se lee
+como "azul": se lee como un negro con profundidad, y evita que el fondo quede
+plano.
+
+Las secciones alternan entre los dos oscuros —el hero y la sección del medio
+van sobre azul, el catálogo sobre negro— y encima hay dos capas sutiles que
+dan textura:
+
+- **Grano** (`.grain`): ruido finísimo al 4,5% de opacidad sobre toda la
+  página. Es lo que hace que el fondo se lea como tela en lugar de como un
+  color plano. Se genera por CSS, no es una imagen descargada.
+- **Viñeta** (`.vignette`): oscurece apenas los bordes y empuja la mirada
+  al centro.
+
+Las dos son decorativas, no interceptan clics y viven por debajo del header y
+de los paneles. Si querés más o menos textura, cambiá el `opacity` de `.grain`.
+
+---
+
 ## Animaciones
 
 El sitio anima al hacer scroll: las secciones aparecen, las fotos se desplazan

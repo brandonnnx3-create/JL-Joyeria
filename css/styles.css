@@ -6,11 +6,18 @@
 
 :root {
   /* Negros con una mínima desviación fría, para que no se vean apagados. */
-  --ink:       #0B0B0C;
-  --ink-2:     #121114;
-  --ink-3:     #1A181C;
-  --line:      #2A262C;
-  --line-2:    #3A343C;
+  --ink:       #0A0A0C;
+  --ink-2:     #111015;
+  --ink-3:     #191820;
+  --line:      #262433;
+  --line-2:    #373446;
+
+  /* Azul de medianoche: el tercer color. Nunca se lee como "azul",
+     se lee como un negro con profundidad. Las secciones alternan
+     entre el negro y este azul para que el fondo no sea plano. */
+  --navy:      #0A0F1C;
+  --navy-2:    #0D1425;
+  --navy-3:    #121B31;
 
   /* Dorados muestreados del propio logo: cálidos, tirando a bronce. */
   --gold:      #C49A46;
@@ -44,7 +51,15 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--ink);
+  background-color: var(--ink);
+  /* Dos auroras muy tenues rompen el plano sin que se note de dónde
+     sale la luz. Se quedan fijas mientras la página se desplaza. */
+  background-image:
+    radial-gradient(ellipse 90% 55% at 12% 0%,   rgba(18,27,49,.72), transparent 62%),
+    radial-gradient(ellipse 70% 45% at 92% 62%,  rgba(14,21,40,.60), transparent 58%),
+    radial-gradient(ellipse 60% 40% at 50% 104%, rgba(140,98,42,.10), transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--bone);
   font-family: "Jost", "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
@@ -90,6 +105,28 @@ h1, h2, h3, .serif {
    propio script, así el contenido siempre se ve.
    ============================================================ */
 
+/* Grano: una capa de ruido finísima sobre toda la página. Es lo que
+   hace que un fondo oscuro se lea como tela o papel en lugar de como
+   un color plano. Va por encima del contenido pero por debajo del
+   header y de los paneles, y no intercepta clics. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Viñeta: oscurece apenas los bordes y empuja la mirada al centro. */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse 78% 62% at 50% 45%, transparent 52%, rgba(0,0,0,.42));
+}
+
 .js .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -118,15 +155,15 @@ h1, h2, h3, .serif {
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 60;
-  background: rgba(11,11,12,.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(10,15,28,.66);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
   transition: background .35s var(--ease), border-color .35s var(--ease);
 }
 
 .header.is-stuck {
-  background: rgba(11,11,12,.93);
+  background: rgba(10,15,28,.92);
   border-bottom-color: var(--line);
 }
 
@@ -261,6 +298,8 @@ h1, h2, h3, .serif {
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(170deg, var(--navy-2) 0%, var(--navy) 42%, transparent 88%);
 }
 
 /* Halo dorado difuso: da profundidad sin cargar la pantalla. */
@@ -337,7 +376,7 @@ h1, h2, h3, .serif {
   width: 104px;
   height: 104px;
   border-radius: 50%;
-  background: var(--ink);
+  background: linear-gradient(160deg, var(--navy-3), var(--navy));
   border: 1px solid var(--gold-dim);
   display: grid;
   place-content: center;
@@ -451,7 +490,7 @@ h1, h2, h3, .serif {
 
 .ticker {
   border-block: 1px solid var(--line);
-  background: var(--ink-2);
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-2) 50%, var(--navy) 100%);
   overflow: hidden;
   padding-block: 15px;
 }
@@ -499,6 +538,7 @@ h1, h2, h3, .serif {
 }
 
 .story {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -508,6 +548,28 @@ h1, h2, h3, .serif {
   padding: clamp(60px, 8vw, 104px) 20px;
   width: 100%;
 }
+
+/* Hilo dorado entre una sección y la siguiente. */
+.story + .story::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-2) 22%, var(--line-2) 78%, transparent);
+}
+
+/* La sección del medio va sobre el azul, a ancho completo. */
+.stories .story--flip {
+  max-width: none;
+  padding-inline: max(20px, calc((100vw - var(--maxw)) / 2 + 20px));
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 50%, var(--navy-2), var(--navy) 78%);
+  border-block: 1px solid var(--line);
+}
+
+.story--flip::before { display: none; }
 
 .story--flip .story__media { order: 2; }
 
@@ -606,7 +668,8 @@ h1, h2, h3, .serif {
 
 .strip {
   border-block: 1px solid var(--line);
-  background: var(--ink-2);
+  background:
+    radial-gradient(ellipse 60% 140% at 50% 50%, var(--navy-3), var(--navy) 72%);
   padding-block: 38px;
 }
 
@@ -640,9 +703,9 @@ h1, h2, h3, .serif {
   position: sticky;
   top: calc(var(--hh) + env(safe-area-inset-top, 0px));
   z-index: 50;
-  background: rgba(11,11,12,.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(10,15,28,.93);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
 }
 
@@ -764,7 +827,7 @@ h1, h2, h3, .serif {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(11,11,12,.78), transparent 52%);
+  background: linear-gradient(to top, rgba(10,15,28,.82), transparent 52%);
   opacity: 0;
   transition: opacity .35s var(--ease);
   pointer-events: none;
@@ -776,7 +839,7 @@ h1, h2, h3, .serif {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(11,11,12,.82);
+  background: rgba(10,15,28,.85);
   border: 1px solid var(--gold-dim);
   color: var(--gold-lt);
   font-size: .563rem;
@@ -793,7 +856,7 @@ h1, h2, h3, .serif {
   bottom: 10px;
   z-index: 2;
   border: 1px solid var(--gold-dim);
-  background: rgba(11,11,12,.72);
+  background: rgba(10,15,28,.78);
   color: var(--gold-lt);
   font-size: .625rem;
   letter-spacing: .2em;
@@ -895,7 +958,7 @@ h1, h2, h3, .serif {
   height: 44px;
   border-radius: 50%;
   border: 1px solid var(--gold-dim);
-  background: rgba(11,11,12,.88);
+  background: rgba(13,20,37,.9);
   color: var(--gold);
   cursor: pointer;
   display: grid;
@@ -932,7 +995,7 @@ h1, h2, h3, .serif {
   right: 0;
   bottom: 0;
   width: min(440px, 100%);
-  background: var(--ink-2);
+  background: linear-gradient(200deg, var(--navy-2), var(--navy) 60%);
   border-left: 1px solid var(--line);
   z-index: 100;
   display: flex;
@@ -966,7 +1029,7 @@ h1, h2, h3, .serif {
   border-top: 1px solid var(--line);
   padding: 20px;
   flex-shrink: 0;
-  background: var(--ink-2);
+  background: var(--navy-2);
 }
 
 .line {
@@ -1170,7 +1233,7 @@ h1, h2, h3, .serif {
 
 .input, .select, .textarea {
   width: 100%;
-  background: var(--ink);
+  background: rgba(5,8,16,.55);
   border: 1px solid var(--line);
   color: var(--bone);
   font-family: inherit;
@@ -1208,7 +1271,7 @@ h1, h2, h3, .serif {
 .radio__title { font-size: .9rem; display: block; }
 .radio__sub { font-size: .72rem; color: var(--muted-2); display: block; margin-top: 2px; }
 
-.review { border: 1px solid var(--line); padding: 16px; margin-bottom: 18px; background: var(--ink); }
+.review { border: 1px solid var(--line); padding: 16px; margin-bottom: 18px; background: rgba(5,8,16,.5); }
 
 .review__h {
   font-size: .625rem;
@@ -1267,8 +1330,9 @@ h1, h2, h3, .serif {
    ============================================================ */
 
 .footer {
+  position: relative;
   border-top: 1px solid var(--line);
-  background: var(--ink-2);
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
   padding-block: 56px 30px;
 }
 
