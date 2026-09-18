@@ -221,6 +221,32 @@ de los paneles. Si querés más o menos textura, cambiá el `opacity` de `.grain
 
 ---
 
+## Las formas
+
+Los cantos redondeados salen de un sistema de cinco medidas, no de un valor
+único para todo (`css/styles.css`, arriba de todo):
+
+| Medida | Dónde se usa |
+|---|---|
+| `--r-xs` 6px | Miniaturas del carrito |
+| `--r-sm` 10px | Campos del formulario, cuadros de resumen |
+| `--r-md` 16px | Tarjetas del catálogo, garantías |
+| `--r-lg` 26px | Fotos de las secciones destacadas, panel lateral |
+| `--r-pill` | Botones, fichas de categoría, sellos |
+
+Un mismo canto para todo aplana la jerarquía: si la tarjeta y el botón tienen
+la misma curva, nada se lee como más importante.
+
+Dos formas se apartan del sistema a propósito:
+
+- **La foto del hero se remata en arco**, como el nicho de una vitrina. El
+  radio de arriba es `999px`, que el navegador limita solo a la mitad del
+  ancho, así queda un semicírculo exacto en cualquier pantalla.
+- **La sección 02 invierte ese arco**, con la curva abajo, para que las tres
+  secciones destacadas no se lean iguales.
+
+---
+
 ## Animaciones
 
 El sitio anima al hacer scroll: las secciones aparecen, las fotos se desplazan

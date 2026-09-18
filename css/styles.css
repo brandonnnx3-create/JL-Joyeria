@@ -15,9 +15,9 @@
   /* Azul de medianoche: el tercer color. Nunca se lee como "azul",
      se lee como un negro con profundidad. Las secciones alternan
      entre el negro y este azul para que el fondo no sea plano. */
-  --navy:      #060911;
-  --navy-2:    #090D18;
-  --navy-3:    #0C1222;
+  --navy:      #04060E;
+  --navy-2:    #060A14;
+  --navy-3:    #091020;
 
   /* Dorados muestreados del propio logo: cálidos, tirando a bronce. */
   --gold:      #C49A46;
@@ -33,7 +33,14 @@
   --warn:      #D9A441;
   --err:       #D06A62;
 
-  --radius:    2px;
+  /* Cada forma tiene su propio canto según el papel que cumple.
+     Un solo radio para todo aplana la jerarquía. */
+  --r-xs:      6px;    /* etiquetas y sellos */
+  --r-sm:      10px;   /* campos y cuadros chicos */
+  --r-md:      16px;   /* tarjetas del catálogo */
+  --r-lg:      26px;   /* fotos grandes y paneles */
+  --r-pill:    999px;  /* botones y fichas */
+  --radius:    var(--r-sm);
   --maxw:      1280px;
   --hh:        68px;                 /* alto del header */
   --cbh:       58px;                 /* alto de la barra de categorías */
@@ -55,8 +62,8 @@ body {
   /* Dos auroras muy tenues rompen el plano sin que se note de dónde
      sale la luz. Se quedan fijas mientras la página se desplaza. */
   background-image:
-    radial-gradient(ellipse 90% 55% at 12% 0%,   rgba(11,17,32,.70), transparent 62%),
-    radial-gradient(ellipse 70% 45% at 92% 62%,  rgba(8,13,25,.58), transparent 58%),
+    radial-gradient(ellipse 90% 55% at 12% 0%,   rgba(8,13,26,.72), transparent 62%),
+    radial-gradient(ellipse 70% 45% at 92% 62%,  rgba(5,9,19,.60), transparent 58%),
     radial-gradient(ellipse 60% 40% at 50% 104%, rgba(140,98,42,.08), transparent 60%);
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -155,7 +162,7 @@ h1, h2, h3, .serif {
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 60;
-  background: rgba(6,9,17,.70);
+  background: rgba(4,6,14,.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
@@ -163,7 +170,7 @@ h1, h2, h3, .serif {
 }
 
 .header.is-stuck {
-  background: rgba(6,9,17,.94);
+  background: rgba(4,6,14,.95);
   border-bottom-color: var(--line);
 }
 
@@ -183,6 +190,7 @@ h1, h2, h3, .serif {
   width: 100%;
   transform: scaleX(0);
   transform-origin: 0 50%;
+  border-radius: 0 var(--r-pill) var(--r-pill) 0;
   background: linear-gradient(90deg, var(--gold-dim), var(--gold-lt));
 }
 
@@ -255,7 +263,7 @@ h1, h2, h3, .serif {
   padding: 9px;
   display: grid;
   place-items: center;
-  border-radius: var(--radius);
+  border-radius: var(--r-pill);
   transition: color .2s var(--ease), border-color .2s var(--ease);
 }
 
@@ -349,16 +357,21 @@ h1, h2, h3, .serif {
 
 .hero__art { position: relative; }
 
+/* El marco y la foto se rematan en arco, como el nicho de una vitrina.
+   El radio se limita solo a la mitad del ancho, así queda un
+   semicírculo exacto sin importar el tamaño de pantalla. */
 .hero__frame {
   position: relative;
   border: 1px solid var(--gold-dim);
   padding: 14px;
+  border-radius: 999px 999px var(--r-lg) var(--r-lg);
 }
 
 .hero__shot {
   overflow: hidden;
   aspect-ratio: 4 / 5;
   background: var(--ink-2);
+  border-radius: 999px 999px var(--r-md) var(--r-md);
 }
 
 .hero__shot img {
@@ -450,8 +463,8 @@ h1, h2, h3, .serif {
   letter-spacing: .18em;
   text-transform: uppercase;
   font-weight: 500;
-  padding: 15px 30px;
-  border-radius: var(--radius);
+  padding: 15px 32px;
+  border-radius: var(--r-pill);
   cursor: pointer;
   border: 1px solid var(--gold);
   background: var(--gold);
@@ -579,7 +592,11 @@ h1, h2, h3, .serif {
   overflow: hidden;
   background: var(--ink-2);
   border: 1px solid var(--line);
+  border-radius: var(--r-lg);
 }
+
+/* La del medio invierte el remate, para que las tres no se lean igual. */
+.story--flip .story__media { border-radius: var(--r-lg) var(--r-lg) 999px 999px; }
 
 .story__media img {
   width: 100%;
@@ -703,7 +720,7 @@ h1, h2, h3, .serif {
   position: sticky;
   top: calc(var(--hh) + env(safe-area-inset-top, 0px));
   z-index: 50;
-  background: rgba(6,9,17,.94);
+  background: rgba(4,6,14,.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
@@ -728,10 +745,10 @@ h1, h2, h3, .serif {
   font-size: .75rem;
   letter-spacing: .16em;
   text-transform: uppercase;
-  padding: 9px 17px;
+  padding: 9px 18px;
   cursor: pointer;
   white-space: nowrap;
-  border-radius: var(--radius);
+  border-radius: var(--r-pill);
   transition: color .22s var(--ease), border-color .22s var(--ease);
 }
 
@@ -807,8 +824,11 @@ h1, h2, h3, .serif {
   overflow: hidden;
   background: var(--ink-2);
   border: 1px solid var(--line);
-  transition: border-color .3s var(--ease);
+  border-radius: var(--r-md);
+  transition: border-color .3s var(--ease), transform .45s var(--ease-out);
 }
+
+.card:hover .card__media { transform: translateY(-6px); }
 
 .card:hover .card__media { border-color: var(--gold-dim); }
 
@@ -827,10 +847,11 @@ h1, h2, h3, .serif {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(6,9,17,.86), transparent 52%);
+  background: linear-gradient(to top, rgba(4,6,14,.88), transparent 52%);
   opacity: 0;
   transition: opacity .35s var(--ease);
   pointer-events: none;
+  border-radius: inherit;
 }
 
 .card:hover .card__media::after { opacity: 1; }
@@ -839,13 +860,14 @@ h1, h2, h3, .serif {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(6,9,17,.88);
+  background: rgba(4,6,14,.90);
   border: 1px solid var(--gold-dim);
   color: var(--gold-lt);
   font-size: .563rem;
   letter-spacing: .2em;
   text-transform: uppercase;
-  padding: 4px 9px;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
   backdrop-filter: blur(4px);
   z-index: 2;
 }
@@ -856,12 +878,13 @@ h1, h2, h3, .serif {
   bottom: 10px;
   z-index: 2;
   border: 1px solid var(--gold-dim);
-  background: rgba(6,9,17,.82);
+  background: rgba(4,6,14,.85);
   color: var(--gold-lt);
   font-size: .625rem;
   letter-spacing: .2em;
   text-transform: uppercase;
   padding: 11px;
+  border-radius: var(--r-pill);
   text-align: center;
   opacity: 0;
   transform: translateY(10px);
@@ -932,7 +955,15 @@ h1, h2, h3, .serif {
   padding-block: 20px 86px;
 }
 
-.promise { border-top: 1px solid var(--line); padding-top: 20px; }
+.promise {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 22px 24px 24px;
+  background: linear-gradient(170deg, rgba(9,16,32,.5), transparent 70%);
+  transition: border-color .3s var(--ease);
+}
+
+.promise:hover { border-color: var(--gold-dim); }
 
 .promise__n {
   font-family: "Bodoni Moda", Georgia, serif;
@@ -958,7 +989,7 @@ h1, h2, h3, .serif {
   height: 44px;
   border-radius: 50%;
   border: 1px solid var(--gold-dim);
-  background: rgba(9,13,24,.92);
+  background: rgba(6,10,20,.93);
   color: var(--gold);
   cursor: pointer;
   display: grid;
@@ -997,6 +1028,8 @@ h1, h2, h3, .serif {
   width: min(440px, 100%);
   background: linear-gradient(200deg, var(--navy-2), var(--navy) 60%);
   border-left: 1px solid var(--line);
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  overflow: hidden;
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -1046,6 +1079,7 @@ h1, h2, h3, .serif {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border: 1px solid var(--line);
+  border-radius: var(--r-xs);
   width: 100%;
   height: 100%;
 }
@@ -1074,7 +1108,13 @@ h1, h2, h3, .serif {
 
 .line__row + .line__row { margin-top: 6px; }
 
-.qty { display: inline-flex; align-items: center; border: 1px solid var(--line); }
+.qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
 
 .qty button {
   appearance: none;
@@ -1151,6 +1191,7 @@ h1, h2, h3, .serif {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border: 1px solid var(--line);
+  border-radius: var(--r-md);
   margin-bottom: 20px;
 }
 
@@ -1203,9 +1244,9 @@ h1, h2, h3, .serif {
   color: var(--muted);
   font-family: inherit;
   font-size: .75rem;
-  padding: 8px 13px;
+  padding: 8px 14px;
   cursor: pointer;
-  border-radius: var(--radius);
+  border-radius: var(--r-pill);
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -1238,8 +1279,8 @@ h1, h2, h3, .serif {
   color: var(--bone);
   font-family: inherit;
   font-size: .93rem;
-  padding: 12px 13px;
-  border-radius: var(--radius);
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
   transition: border-color .18s var(--ease);
 }
 
@@ -1258,9 +1299,9 @@ h1, h2, h3, .serif {
   align-items: flex-start;
   gap: 11px;
   border: 1px solid var(--line);
-  padding: 13px;
+  padding: 14px;
   cursor: pointer;
-  border-radius: var(--radius);
+  border-radius: var(--r-sm);
   transition: border-color .18s var(--ease);
 }
 
@@ -1271,7 +1312,13 @@ h1, h2, h3, .serif {
 .radio__title { font-size: .9rem; display: block; }
 .radio__sub { font-size: .72rem; color: var(--muted-2); display: block; margin-top: 2px; }
 
-.review { border: 1px solid var(--line); padding: 16px; margin-bottom: 18px; background: rgba(2,4,9,.55); }
+.review {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 17px;
+  margin-bottom: 18px;
+  background: rgba(2,4,9,.55);
+}
 
 .review__h {
   font-size: .625rem;
@@ -1316,8 +1363,9 @@ h1, h2, h3, .serif {
 
 .warnbox {
   border: 1px solid var(--warn);
+  border-radius: var(--r-sm);
   background: rgba(217,164,65,.08);
-  padding: 13px;
+  padding: 14px;
   font-size: .8rem;
   color: var(--bone);
   margin-bottom: 18px;
