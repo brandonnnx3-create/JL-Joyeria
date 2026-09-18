@@ -1,5 +1,5 @@
 /* ============================================================
-   RJ JOYERÍA — CATÁLOGO
+   ROMERO JOYERÍA — CATÁLOGO
    ------------------------------------------------------------
    ⚠️ LOS PRECIOS SON DE EJEMPLO. Están puestos para que el
    sitio funcione y se vea completo. Reemplazá cada "precio"

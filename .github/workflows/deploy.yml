@@ -1,0 +1,43 @@
+# Publica el sitio en GitHub Pages en cada push.
+# Requiere que en Settings -> Pages, "Source" esté en "GitHub Actions".
+name: Publicar el sitio
+
+on:
+  push:
+    branches:
+      - claude/serene-bohr-xumxlb
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se pushea dos veces seguidas, la segunda espera a que termine la primera
+# en lugar de cancelarla: así nunca queda el sitio a medio publicar.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Traer el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empaquetar el sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Publicar
+        id: deploy
+        uses: actions/deploy-pages@v4

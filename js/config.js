@@ -1,5 +1,5 @@
 /* ============================================================
-   RJ JOYERÍA — CONFIGURACIÓN
+   ROMERO JOYERÍA — CONFIGURACIÓN
    Este es el único archivo que necesitás tocar para poner el
    sitio en marcha. Cambiá los valores entre comillas y listo.
    ============================================================ */
@@ -13,10 +13,10 @@ const CONFIG = {
      Ejemplo Buenos Aires 11-2345-6789  ->  "5491123456789"
      Ejemplo Córdoba    351-234-5678    ->  "5493512345678"
 
-     ⚠️ PENDIENTE: reemplazá este número por el tuyo.
-        Mientras diga PONE_TU_NUMERO, el checkout avisa al
-        cliente en lugar de abrir un WhatsApp equivocado.        */
-  whatsapp: "PONE_TU_NUMERO",
+     Si queda vacío o mal escrito, el checkout no manda al cliente
+     a un número equivocado: le muestra el pedido para copiar y
+     avisa que falta configurar la tienda.                        */
+  whatsapp: "5491165668692",
 
   /* --- DATOS DE LA MARCA ------------------------------------ */
   marca: "Romero Joyería",

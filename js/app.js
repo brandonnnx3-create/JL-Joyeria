@@ -1,5 +1,5 @@
 /* ============================================================
-   RJ JOYERÍA — LÓGICA DEL SITIO
+   ROMERO JOYERÍA — LÓGICA DEL SITIO
    Catálogo, carrito y checkout por WhatsApp.
    No hace falta tocar este archivo para cargar productos:
    eso se hace en js/products.js
