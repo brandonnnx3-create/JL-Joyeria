@@ -67,6 +67,27 @@ reemplazalo y queda mejor en todos lados.
 
 ---
 
+## Las secciones destacadas de la portada
+
+Entre el hero y el catálogo hay tres bloques numerados (01, 02, 03) que
+presentan sets, cadenas y anillos con foto grande, texto y un botón que lleva
+al catálogo ya filtrado. Están escritos a mano en `index.html`, dentro de
+`<section class="stories">`.
+
+Para cambiar uno, editá su `<article class="story">`: la foto (`story__media`),
+el título (podés poner una parte en itálica dorada con `<em>`), el texto y los
+números de `story__facts`. **Esos números no se calculan solos:** si agregás
+sets al catálogo, actualizá el "10" a mano.
+
+El bloque del medio lleva además `story--flip`, que invierte foto y texto para
+que la portada alterne de lado. Si agregás un cuarto bloque, ponele `reveal`
+para que aparezca al hacer scroll como los otros.
+
+Las frases de la cinta que se desliza están en `js/app.js`, en la lista
+`FRASES`.
+
+---
+
 ## Cómo editar el catálogo
 
 Todo el catálogo vive en **`js/products.js`**. No hace falta tocar ningún otro archivo.
@@ -168,13 +189,29 @@ Los dos sirven el sitio por HTTPS sin configurar nada.
 ## Estructura
 
 ```
-index.html              La página
-css/styles.css          Estilos (paleta negro y dorado)
+index.html              La página: hero, secciones destacadas, catálogo, pie
+css/styles.css          Estilos (paleta negro y dorado) y animaciones
 js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO
-js/app.js               Carrito y checkout (no hace falta tocarlo)
+js/app.js               Carrito, checkout y animaciones (no hace falta tocarlo)
+img/logo.png            El logo, recortado en círculo
 img/productos/          Las 27 fotos, renombradas por categoría
+.github/workflows/      Publica el sitio solo en cada push
 ```
+
+## Animaciones
+
+El sitio anima al hacer scroll: las secciones aparecen, las fotos se desplazan
+más lento que la página, las tarjetas del catálogo entran una detrás de otra y
+la cinta dorada se desliza sin corte.
+
+Dos cosas a tener en cuenta si tocás el código:
+
+- **Nada queda invisible sin JavaScript.** La clase `js` que habilita los
+  estados de entrada la agrega el propio script. Si falla, el contenido se ve.
+- **Se respeta la configuración del sistema.** Si en el celular está activado
+  "reducir movimiento", todo queda quieto y legible. Es una opción de
+  accesibilidad para quienes sufren mareos con las animaciones.
 
 ---
 

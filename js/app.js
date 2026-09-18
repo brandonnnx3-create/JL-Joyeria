@@ -187,10 +187,11 @@
       "</div>";
   }
 
-  function cardHTML(p) {
+  function cardHTML(p, i) {
     const cat = CATEGORIAS.find((c) => c.id === p.categoria);
     return (
-      '<button class="card" data-product="' + p.id + '" aria-label="Ver ' + esc(p.nombre) + '">' +
+      '<button class="card" data-product="' + p.id + '" style="--i:' + (i % 8) + '"' +
+      ' aria-label="Ver ' + esc(p.nombre) + '">' +
       '<div class="card__media">' +
         '<img src="' + p.img + '" alt="' + esc(p.nombre) + '" loading="lazy" width="760" height="1351">' +
         (p.destacado ? '<span class="card__flag">Destacado</span>' : "") +
@@ -219,6 +220,8 @@
     $("#grid").innerHTML = items.length
       ? items.map(cardHTML).join("")
       : '<p class="empty">Todavía no hay piezas en esta categoría.</p>';
+
+    revealCards();
   }
 
   function selectCat(id) {
@@ -286,11 +289,21 @@
      CARRITO
      ============================================================ */
 
+  let lastCount = 0;
+
   function renderCartCount() {
     const n = cartCount();
     const el = $("#cartCount");
     el.textContent = n;
     el.setAttribute("data-empty", String(n === 0));
+
+    if (n > lastCount) {
+      const btn = $("#openCart");
+      btn.classList.remove("bump");
+      void btn.offsetWidth;          /* reinicia la animación */
+      btn.classList.add("bump");
+    }
+    lastCount = n;
   }
 
   function cartLinesHTML() {
@@ -704,6 +717,131 @@
 
     if (e.target.closest("#openCart")) openCart();
   });
+
+
+  /* ============================================================
+     MOVIMIENTO
+     Apariciones al hacer scroll, desplazamiento suave de las
+     fotos, cinta de texto y barra de progreso.
+
+     Todo esto es decorativo: si el navegador no soporta algo,
+     o el sistema pide menos animación, el contenido igual se ve.
+     ============================================================ */
+
+  const quieto = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
+
+  /* La clase .js habilita los estados de entrada en el CSS. Se agrega
+     desde acá para que, sin JavaScript, nada quede invisible. */
+  if (!quieto) document.documentElement.classList.add("js");
+
+  /* --- Apariciones --- */
+
+  let verObs = null;
+
+  if (!quieto && "IntersectionObserver" in window) {
+    verObs = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("in");
+        verObs.unobserve(e.target);           /* una sola vez */
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
+
+    $$(".reveal").forEach((el) => verObs.observe(el));
+  }
+
+  function revealCards() {
+    const cards = $$("#grid .card");
+    if (!verObs) { cards.forEach((c) => c.classList.add("in")); return; }
+    cards.forEach((c) => verObs.observe(c));
+  }
+
+  /* --- Desplazamiento suave de las fotos ---
+     Cada foto se mueve un poco más lento que la página. El recorte
+     lo absorbe el alto extra que las imágenes tienen en el CSS. */
+
+  const capas = $$("[data-par]");
+  let tic = false;
+
+  function moverCapas() {
+    const vh = window.innerHeight;
+    capas.forEach((capa) => {
+      const img = capa.querySelector("img");
+      if (!img) return;
+      const r = capa.getBoundingClientRect();
+      if (r.bottom < -120 || r.top > vh + 120) return;
+
+      /* -1 cuando la foto entra por abajo, +1 cuando sale por arriba. */
+      const centro = r.top + r.height / 2 - vh / 2;
+      const rango = (vh + r.height) / 2;
+      let p = centro / rango;
+      p = p < -1 ? -1 : p > 1 ? 1 : p;
+
+      const amp = parseFloat(capa.dataset.par) || 0.07;
+      img.style.transform =
+        "translate3d(0," + (-amp * 100 + p * amp * 100).toFixed(2) + "%,0)";
+    });
+    tic = false;
+  }
+
+  /* --- Header, progreso y botón de volver arriba --- */
+
+  const header = $("#header");
+  const barra = $("#progress");
+  const arriba = $("#toTop");
+
+  function alScrollear() {
+    const y = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (header) header.classList.toggle("is-stuck", y > 12);
+
+    if (barra) {
+      const alto = document.documentElement.scrollHeight - window.innerHeight;
+      barra.style.transform = "scaleX(" + (alto > 0 ? Math.min(y / alto, 1) : 0) + ")";
+    }
+
+    if (arriba) {
+      const visible = y > 700;
+      if (visible && arriba.hidden) arriba.hidden = false;
+      arriba.classList.toggle("show", visible);
+    }
+
+    if (!quieto && !tic) { tic = true; requestAnimationFrame(moverCapas); }
+  }
+
+  window.addEventListener("scroll", alScrollear, { passive: true });
+  window.addEventListener("resize", alScrollear, { passive: true });
+
+  if (arriba) {
+    arriba.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: quieto ? "auto" : "smooth" });
+    });
+  }
+
+  /* --- Cinta deslizante ---
+     El contenido se escribe dos veces seguidas: cuando la animación
+     llegó a la mitad, la segunda copia está exactamente donde estaba
+     la primera, así el bucle no tiene corte. */
+
+  const FRASES = [
+    "Calidad y elegancia en cada detalle",
+    "Plata 925 de ley",
+    "Envíos a todo el país",
+    "Revisada una por una",
+    "El lujo está en los detalles",
+  ];
+
+  const cinta = $("#ticker");
+  if (cinta) {
+    const bloque = FRASES.map(
+      (f) => '<span class="ticker__item">' + esc(f) + "</span>"
+    ).join("");
+    cinta.innerHTML = bloque + bloque;
+  }
+
+  alScrollear();
 
   loadCart();
   renderCatbar();
