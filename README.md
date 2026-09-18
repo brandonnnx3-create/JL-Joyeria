@@ -217,17 +217,92 @@ Los dos sirven el sitio por HTTPS sin configurar nada.
 
 ---
 
+---
+
+## Panel de administración
+
+`admin.html` — en el sitio publicado, `https://TU-USUARIO.github.io/JL-Joyeria/admin.html`
+
+Desde ahí se manejan precios, stock, piezas, categorías, costos de envío y datos
+de contacto, sin tocar código.
+
+### Cómo funciona, y qué no hace
+
+El sitio es **estático**: no tiene servidor ni base de datos. El panel no puede
+guardar nada en la nube, así que trabaja en tres tiempos:
+
+1. **Editás.** Los cambios quedan guardados en *ese* navegador, y sobreviven a
+   cerrar la pestaña. Arriba siempre dice si hay cambios sin descargar.
+2. **Descargás** `products.js` y `config.js` con el botón de arriba a la derecha.
+3. **Los subís** a la carpeta `js` del repositorio. La tienda se publica sola en
+   un minuto.
+
+Hasta que no hagas el paso 3, **la tienda publicada no cambia**.
+
+### Por qué es seguro tenerlo público
+
+Cualquiera puede abrir `admin.html`, pero no puede hacer nada con eso: lo que
+edite queda en su propio navegador y para que llegue a la tienda hace falta
+subir archivos al repositorio, que requiere tu cuenta de GitHub. La página
+tampoco muestra nada que no sea ya público.
+
+Lleva `noindex` para no aparecer en Google.
+
+**Lo que sí conviene saber:** una contraseña en esta página sería decorativa.
+En un sitio estático la clave viaja en el código y se ve con dos clics. Si algún
+día necesitás una barrera real, hace falta un backend.
+
+### Qué se puede editar
+
+| Pestaña | Qué maneja |
+|---|---|
+| **Productos** | Precio y stock directo en la tabla. El resto —nombre, categoría, foto, material, descripción, etiqueta y colores de piedra— con el botón Editar. Crear y borrar piezas. Buscador y filtros por categoría y por stock. |
+| **Categorías** | Crear, renombrar, reordenar y borrar. Una categoría con piezas no se puede borrar. `Todo` es fija. |
+| **Envíos y contacto** | Costo de envío, monto de envío gratis, texto del retiro, WhatsApp, Instagram, email y ciudad. |
+| **Cómo publicar** | El paso a paso para subir los archivos. |
+
+### El stock
+
+Es un campo opcional por pieza:
+
+- **Vacío** → la pieza se vende sin controlar stock (es como está hoy todo el catálogo).
+- **0** → aparece "Agotado", la foto se atenúa y no se puede comprar.
+- **1 a 3** → aparece "Últimas unidades", salvo que la pieza ya tenga otra etiqueta.
+
+El carrito no deja pedir más unidades de las que hay, y si bajás el stock de algo
+que un cliente tenía en el carrito, la próxima vez que entre se le ajusta solo.
+
+**Conviene cargarlo.** Con stock real, la etiqueta "Últimas unidades" dice la
+verdad. Sin stock, sería una urgencia inventada.
+
+### Las fotos
+
+El panel no sube fotos: al editar una pieza elegís entre las que ya están en
+`img/productos/`. Para agregar una nueva, subila antes a esa carpeta del
+repositorio y después aparece en la lista.
+
+### Si algo sale mal
+
+**Descartar cambios** vuelve todo a como está la tienda publicada. Funciona
+mientras no hayas subido los archivos. Y como cada cambio publicado es un commit,
+siempre se puede volver atrás con `git`.
+
+---
+
 ## Estructura
 
 ```
 index.html              Propuesta A (oscura)
 clara.html              Propuesta B (clara)
+admin.html              Panel de administración
 css/oscura.css          Estilos de la A
 css/clara.css           Estilos de la B
 css/comparador.css      La barra para comparar (se borra al elegir)
+css/admin.css           Estilos del panel
 js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO (lo usan las dos)
 js/app.js               Carrito, checkout y catálogo (lo usan las dos)
+js/admin.js             El panel de administración
 img/logo.png            El logo, recortado en círculo
 img/productos/          Las 27 fotos
 .github/workflows/      Publica el sitio solo en cada push

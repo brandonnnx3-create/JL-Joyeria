@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel · Romero Joyería</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar__brand">
+    <img src="img/logo.png" alt="" width="320" height="320">
+    <span>
+      <strong>Panel</strong>
+      <small>Romero Joyería</small>
+    </span>
+  </div>
+
+  <div class="bar__state" id="estado" data-sucio="false">
+    <span class="dot"></span><span id="estadoTxt">Sin cambios</span>
+  </div>
+
+  <div class="bar__acts">
+    <button class="btn btn--quiet" id="btnDescartar">Descartar cambios</button>
+    <button class="btn" id="btnExportar">Descargar archivos</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" data-panel="productos" aria-selected="true">Productos <span id="nProd">0</span></button>
+  <button class="tab" role="tab" data-panel="categorias" aria-selected="false">Categorías <span id="nCat">0</span></button>
+  <button class="tab" role="tab" data-panel="tienda" aria-selected="false">Envíos y contacto</button>
+  <button class="tab" role="tab" data-panel="publicar" aria-selected="false">Cómo publicar</button>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ PRODUCTOS ============ -->
+  <section id="p-productos">
+    <div class="toolbar">
+      <input class="in in--search" id="buscar" type="search" placeholder="Buscar por nombre…" autocomplete="off">
+      <select class="in" id="filtroCat"><option value="">Todas las categorías</option></select>
+      <select class="in" id="filtroStock">
+        <option value="">Todo el stock</option>
+        <option value="sin">Sin stock cargado</option>
+        <option value="bajo">3 o menos</option>
+        <option value="cero">Agotados</option>
+      </select>
+      <span class="toolbar__sp"></span>
+      <button class="btn btn--quiet" id="btnNuevo">+ Nueva pieza</button>
+    </div>
+
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th class="c-img"></th>
+            <th>Pieza</th>
+            <th class="c-cat">Categoría</th>
+            <th class="c-num">Precio</th>
+            <th class="c-num">Stock</th>
+            <th class="c-eti">Etiqueta</th>
+            <th class="c-act"></th>
+          </tr>
+        </thead>
+        <tbody id="filas"></tbody>
+      </table>
+    </div>
+    <p class="hint">El precio y el stock se editan acá mismo. Para lo demás, tocá <strong>Editar</strong>.</p>
+  </section>
+
+  <!-- ============ CATEGORÍAS ============ -->
+  <section id="p-categorias" hidden>
+    <div class="toolbar">
+      <span class="toolbar__sp"></span>
+      <button class="btn btn--quiet" id="btnNuevaCat">+ Nueva categoría</button>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th class="c-num">Orden</th>
+            <th>Nombre</th>
+            <th>Bajada</th>
+            <th class="c-num">Piezas</th>
+            <th class="c-act"></th>
+          </tr>
+        </thead>
+        <tbody id="filasCat"></tbody>
+      </table>
+    </div>
+    <p class="hint">
+      Las categorías sin piezas no se muestran en la tienda. <strong>Todo</strong> no se puede borrar
+      ni renombrar su identificador, porque es el filtro que muestra la colección completa.
+    </p>
+  </section>
+
+  <!-- ============ TIENDA ============ -->
+  <section id="p-tienda" hidden>
+    <div class="cols">
+      <div class="caja">
+        <h2>Envíos</h2>
+        <label class="campo">
+          <span>Costo de envío</span>
+          <input class="in" id="cfgEnvio" type="number" min="0" step="100" inputmode="numeric">
+          <small>Lo que se cobra por despacho a domicilio.</small>
+        </label>
+        <label class="campo">
+          <span>Envío gratis desde</span>
+          <input class="in" id="cfgGratis" type="number" min="0" step="1000" inputmode="numeric">
+          <small>A partir de este total no se cobra envío. Poné 0 para no ofrecerlo nunca.</small>
+        </label>
+        <label class="campo">
+          <span>Texto del retiro en persona</span>
+          <input class="in" id="cfgRetiro" type="text">
+          <small>Aparece como opción en el checkout.</small>
+        </label>
+      </div>
+
+      <div class="caja">
+        <h2>Contacto</h2>
+        <label class="campo">
+          <span>WhatsApp de la tienda</span>
+          <input class="in" id="cfgWa" type="text" inputmode="numeric" placeholder="5491165668692">
+          <small id="waAyuda">Sólo números: 54 + 9 + característica sin el 0 + número sin el 15.</small>
+        </label>
+        <label class="campo">
+          <span>Instagram</span>
+          <input class="in" id="cfgIg" type="text" placeholder="rj.joyeria">
+          <small>Sin la arroba. Vacío: no se muestra.</small>
+        </label>
+        <label class="campo">
+          <span>Email</span>
+          <input class="in" id="cfgMail" type="email" placeholder="hola@romerojoyeria.com">
+          <small>Vacío: no se muestra.</small>
+        </label>
+        <label class="campo">
+          <span>Ciudad</span>
+          <input class="in" id="cfgCiudad" type="text">
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PUBLICAR ============ -->
+  <section id="p-publicar" hidden>
+    <div class="caja caja--ancha">
+      <h2>Cómo pasar los cambios a la tienda</h2>
+      <p class="prosa">
+        Este panel guarda lo que editás en <strong>este navegador</strong>. La tienda publicada no
+        cambia hasta que subas los archivos. Son tres pasos.
+      </p>
+
+      <ol class="pasos">
+        <li>
+          <h3>Descargá los archivos</h3>
+          <p>El botón <strong>Descargar archivos</strong> de arriba te baja <code>products.js</code>
+          y <code>config.js</code> con todo lo que editaste.</p>
+        </li>
+        <li>
+          <h3>Subilos al repositorio</h3>
+          <p>Entrá a tu repositorio en GitHub, abrí la carpeta <code>js</code>, tocá
+          <strong>Add file → Upload files</strong> y arrastrá los dos archivos. Confirmá con
+          <strong>Commit changes</strong>.</p>
+        </li>
+        <li>
+          <h3>Esperá un minuto</h3>
+          <p>La tienda se publica sola. Si no ves los cambios, recargá con
+          <kbd>Ctrl</kbd>+<kbd>F5</kbd>.</p>
+        </li>
+      </ol>
+
+      <h2 style="margin-top:28px">Sobre las fotos</h2>
+      <p class="prosa">
+        Este panel no sube fotos: elige entre las que ya están en <code>img/productos/</code>.
+        Para agregar una nueva, subila a esa carpeta del repositorio con el mismo método de arriba
+        y después aparece en la lista al editar una pieza.
+      </p>
+      <p class="prosa">
+        Conviene que sean verticales y de ancho parecido a las actuales (760 px). Una foto muy
+        pesada hace lenta la tienda en el celular.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<div id="capa"></div>
+
+<script src="js/config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

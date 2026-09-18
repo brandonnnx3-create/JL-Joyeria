@@ -1362,3 +1362,33 @@ h2, .t-sec {
   .js .reveal, .js .card { opacity: 1 !important; transform: none !important; }
   .modal-wrap, .modal { opacity: 1; transform: none; }
 }
+
+/* ---------- Stock ---------- */
+
+.card--out .card__shot img { opacity: .5; }
+
+.card__tag--out {
+  color: var(--graphite);
+  background: rgba(246,243,238,.94);
+}
+
+.stock {
+  font-size: .8125rem;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stock::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.stock--ok  { color: #3F7D52; }
+.stock--low { color: #9A6A1E; }
+.stock--out { color: var(--err); }

@@ -1557,3 +1557,35 @@ h1, h2, h3, .serif {
   .ticker__track { animation: none; }
   .modal-wrap, .modal { opacity: 1; transform: none; }
 }
+
+/* ---------- Stock ---------- */
+
+.card--out .card__shot img,
+.card--out .card__media img { opacity: .42; }
+
+.card__flag--out,
+.card__tag--out {
+  border-color: var(--muted-2);
+  color: var(--muted);
+}
+
+.stock {
+  font-size: .78rem;
+  margin: 0 0 var(--s2, 14px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stock::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.stock--ok  { color: var(--ok); }
+.stock--low { color: var(--warn); }
+.stock--out { color: var(--err); }

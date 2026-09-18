@@ -11,6 +11,13 @@
 
    categoria: "anillos" | "dijes" | "cadenas" | "aros" | "sets"
 
+   stock:     unidades disponibles. Es opcional:
+                sin el campo  -> la pieza se vende sin control de stock
+                0             -> se muestra "Agotado" y no se puede comprar
+                1, 2 o 3      -> se muestra "Últimas unidades" solo
+                                 si la pieza no tiene otra etiqueta
+              El carrito no deja pedir más unidades de las que hay.
+
    etiqueta:  texto corto que aparece sobre la foto. Es opcional y
               conviene usarlo poco: si todas las piezas llevan una,
               ninguna destaca. Tres o cuatro como máximo.

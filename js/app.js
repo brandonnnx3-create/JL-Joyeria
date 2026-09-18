@@ -65,6 +65,13 @@
       cart = Array.isArray(parsed)
         ? parsed.filter((i) => i && PRODUCTOS.some((p) => p.id === i.id))
         : [];
+
+      /* Si el stock bajó desde la última visita, se recorta el carrito. */
+      cart.forEach((i) => {
+        const p = findProduct(i.id);
+        if (p && typeof p.stock === "number") i.qty = Math.min(i.qty, p.stock);
+      });
+      cart = cart.filter((i) => i.qty > 0);
     } catch (e) {
       cart = [];
     }
@@ -81,20 +88,49 @@
 
   const findProduct = (id) => PRODUCTOS.find((p) => p.id === id);
 
+  /* ---------- Stock ----------
+     El campo es opcional. Sin él, la pieza se vende sin control.
+     Con él, 0 es agotado y 3 o menos es "últimas unidades". */
+
+  const tieneStock = (p) => p && typeof p.stock === "number" && !isNaN(p.stock);
+  const agotado = (p) => tieneStock(p) && p.stock <= 0;
+  const quedanPocas = (p) => tieneStock(p) && p.stock > 0 && p.stock <= 3;
+
+  /* Unidades de esta pieza que ya están en el carrito. */
+  function enCarrito(id) {
+    return cart.reduce((n, i) => (i.id === id ? n + i.qty : n), 0);
+  }
+
+  /* Cuántas más se pueden agregar antes de quedarse sin stock. */
+  function disponibles(p) {
+    if (!tieneStock(p)) return Infinity;
+    return Math.max(0, p.stock - enCarrito(p.id));
+  }
+
   const lineKey = (id, piedra) => id + "::" + (piedra || "");
 
   function addToCart(id, piedra, qty) {
+    const p = findProduct(id);
+    const libres = disponibles(p);
+    const pedidas = Math.min(qty || 1, libres);
+    if (pedidas < 1) return false;
+
     const key = lineKey(id, piedra);
     const found = cart.find((i) => lineKey(i.id, i.piedra) === key);
-    if (found) found.qty += qty || 1;
-    else cart.push({ id: id, piedra: piedra || "", qty: qty || 1 });
+    if (found) found.qty += pedidas;
+    else cart.push({ id: id, piedra: piedra || "", qty: pedidas });
     saveCart();
     renderCartCount();
+    return true;
   }
 
   function setQty(key, delta) {
     const item = cart.find((i) => lineKey(i.id, i.piedra) === key);
     if (!item) return;
+
+    const p = findProduct(item.id);
+    if (delta > 0 && tieneStock(p) && enCarrito(item.id) + delta > p.stock) return;
+
     item.qty += delta;
     if (item.qty < 1) cart = cart.filter((i) => i !== item);
     saveCart();
@@ -215,16 +251,24 @@
     const nombreCat = esc(cat ? cat.nombre : p.categoria);
     const B = T.caja;
 
+    /* La etiqueta cargada a mano gana; si no hay, el stock decide. */
+    const etiqueta = p.etiqueta
+      || (agotado(p) ? "Agotado" : quedanPocas(p) ? "Últimas unidades" : "");
+
     const meta  = '<span class="card__meta">' + nombreCat + "</span>";
     const name  = '<span class="card__name">' + esc(p.nombre) + "</span>";
     const price = '<span class="card__price">' + money(p.precio) + "</span>";
 
     return (
-      '<button class="card" data-product="' + p.id + '" style="--i:' + (i % 9) + '"' +
+      '<button class="card' + (agotado(p) ? " card--out" : "") + '"' +
+      ' data-product="' + p.id + '" style="--i:' + (i % 9) + '"' +
       ' aria-label="Ver ' + esc(p.nombre) + '">' +
       "<" + B + ' class="' + T.shot + '">' +
         '<img src="' + p.img + '" alt="' + esc(p.nombre) + '" loading="lazy" width="760" height="1351">' +
-        (p.etiqueta ? '<span class="' + T.tag + '">' + esc(p.etiqueta) + "</span>" : "") +
+        (etiqueta
+          ? '<span class="' + T.tag + (agotado(p) ? " card__tag--out" : "") + '">' +
+            esc(etiqueta) + "</span>"
+          : "") +
         '<span class="' + T.act + '">Ver pieza</span>' +
       "</" + B + ">" +
       "<" + B + ' class="card__body">' +
@@ -294,11 +338,28 @@
                 "</button>"
               ).join("") + "</div></div>"
             : "") +
+          (tieneStock(p)
+            ? '<p class="stock stock--' +
+              (agotado(p) ? "out" : quedanPocas(p) ? "low" : "ok") + '">' +
+              (agotado(p)
+                ? "Sin stock por ahora. Escribinos y te avisamos cuando vuelva."
+                : quedanPocas(p)
+                  ? "Quedan " + p.stock + (p.stock === 1 ? " unidad" : " unidades")
+                  : "Disponible") +
+              "</p>"
+            : "") +
           '<p class="note">' + esc(IVA_NOTE) + "</p>" +
         "</div>" +
       "</div>" +
       '<div class="panel__foot">' +
-        '<button class="btn btn--block" id="addBtn" data-autofocus><span>Agregar al carrito</span></button>' +
+        '<button class="btn btn--block" id="addBtn" data-autofocus' +
+        (disponibles(p) < 1 ? " disabled" : "") + "><span>" +
+        (agotado(p)
+          ? "Sin stock"
+          : disponibles(p) < 1
+            ? "Ya tenés todo el stock en el carrito"
+            : "Agregar al carrito") +
+        "</span></button>" +
       "</div>";
 
     openLayer(html, (panel) => {
@@ -313,8 +374,7 @@
       });
 
       $("#addBtn", panel).addEventListener("click", () => {
-        addToCart(p.id, chosen, 1);
-        openCart();
+        if (addToCart(p.id, chosen, 1)) openCart();
       });
     }, "wide");
   }
