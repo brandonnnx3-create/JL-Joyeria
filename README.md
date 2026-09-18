@@ -67,24 +67,24 @@ reemplazalo y queda mejor en todos lados.
 
 ---
 
-## Las secciones destacadas de la portada
+## Las secciones de la portada
 
-Entre el hero y el catálogo hay tres bloques numerados (01, 02, 03) que
-presentan sets, cadenas y anillos con foto grande, texto y un botón que lleva
-al catálogo ya filtrado. Están escritos a mano en `index.html`, dentro de
-`<section class="stories">`.
+El orden responde a cómo compra la gente: primero qué es, después dónde
+empezar, después la prueba, después el catálogo, y recién al final quiénes
+somos y por qué confiar.
 
-Para cambiar uno, editá su `<article class="story">`: la foto (`story__media`),
-el título (podés poner una parte en itálica dorada con `<em>`), el texto y los
-números de `story__facts`. **Esos números no se calculan solos:** si agregás
-sets al catálogo, actualizá el "10" a mano.
+1. **Hero** — qué vendemos, en una frase, con la pieza a la vista.
+2. **Dónde empezar** — tres categorías como puerta de entrada.
+3. **La pieza de la temporada** — sección oscura, una sola pieza con sus datos.
+4. **Catálogo** — la galería completa con filtros.
+5. **La casa** — el relato de marca, breve.
+6. **Confianza** — envíos, sello, cambios y atención, sin íconos genéricos.
 
-El bloque del medio lleva además `story--flip`, que invierte foto y texto para
-que la portada alterne de lado. Si agregás un cuarto bloque, ponele `reveal`
-para que aparezca al hacer scroll como los otros.
+Todo está escrito a mano en `index.html`. Las fotos de las tarjetas de
+categoría y de la pieza destacada se cambian editando su `src`.
 
-Las frases de la cinta que se desliza están en `js/app.js`, en la lista
-`FRASES`.
+**Los números de las categorías ("10 piezas") están escritos a mano.** Si
+agregás productos, actualizalos.
 
 ---
 
@@ -199,67 +199,68 @@ img/productos/          Las 27 fotos, renombradas por categoría
 .github/workflows/      Publica el sitio solo en cada push
 ```
 
-## Los colores del fondo
+## El sistema de diseño
 
-La paleta tiene tres colores, no dos: negro, dorado y un **azul de medianoche**
-(`--navy`, `--navy-2`, `--navy-3` en `css/styles.css`). El azul nunca se lee
-como "azul": se lee como un negro con profundidad, y evita que el fondo quede
-plano.
+### Color
 
-Las secciones alternan entre los dos oscuros —el hero y la sección del medio
-van sobre azul, el catálogo sobre negro— y encima hay dos capas sutiles que
-dan textura:
+La base es neutra y cálida. El champagne es **acento, nunca color dominante**:
+aparece en volantas, en una palabra por título y poco más. El único color
+saturado de la página tiene que ser el de las piedras.
 
-- **Grano** (`.grain`): ruido finísimo al 4,5% de opacidad sobre toda la
-  página. Es lo que hace que el fondo se lea como tela en lugar de como un
-  color plano. Se genera por CSS, no es una imagen descargada.
-- **Viñeta** (`.vignette`): oscurece apenas los bordes y empuja la mirada
-  al centro.
-
-Las dos son decorativas, no interceptan clics y viven por debajo del header y
-de los paneles. Si querés más o menos textura, cambiá el `opacity` de `.grain`.
-
----
-
-## Las formas
-
-Los cantos redondeados salen de un sistema de cinco medidas, no de un valor
-único para todo (`css/styles.css`, arriba de todo):
-
-| Medida | Dónde se usa |
+| Token | Para qué |
 |---|---|
-| `--r-xs` 6px | Miniaturas del carrito |
-| `--r-sm` 10px | Campos del formulario, cuadros de resumen |
-| `--r-md` 16px | Tarjetas del catálogo, garantías |
-| `--r-lg` 26px | Fotos de las secciones destacadas, panel lateral |
-| `--r-pill` | Botones, fichas de categoría, sellos |
+| `--ivory` `#F6F3EE` | Fondo de la página |
+| `--ivory-2` `--ivory-3` | Superficies y fondo de las fotos |
+| `--sand` `--sand-2` | Reglas y bordes |
+| `--carbon` `#15141A` | Texto y secciones editoriales oscuras |
+| `--graphite` | Texto secundario |
+| `--champagne` `#86683C` | Acento sobre claro (pasa contraste AA) |
+| `--champagne-lt` | Acento sobre oscuro |
 
-Un mismo canto para todo aplana la jerarquía: si la tarjeta y el botón tienen
-la misma curva, nada se lee como más importante.
+**Los precios van en el color del texto, no en dorado.** El oro como color de
+precio es justamente lo que abarata la percepción: lo usan las tiendas que
+quieren parecer caras, no las que lo son.
 
-Dos formas se apartan del sistema a propósito:
+### Tipografía
 
-- **La foto del hero se remata en arco**, como el nicho de una vitrina. El
-  radio de arriba es `999px`, que el navegador limita solo a la mitad del
-  ancho, así queda un semicírculo exacto en cualquier pantalla.
-- **La sección 02 invierte ese arco**, con la curva abajo, para que las tres
-  secciones destacadas no se lean iguales.
+Dos familias, ni una más. **Bodoni Moda** para la voz de la marca (títulos,
+nombres de pieza, cifras) y **Jost** para todo lo que se opera (navegación,
+botones, formularios, precios).
+
+El tracking se abre en los tamaños chicos (`.24em` en las volantas) y se cierra
+en los grandes (`-.022em` en el H1). Es lo que separa una tipografía puesta de
+una compuesta.
+
+### Espaciado
+
+Escala de base 8 (`--s1` a `--s8`). Las secciones respiran entre 96 y 128 px en
+escritorio. El aire es la mitad del trabajo: una pieza rodeada de blanco se lee
+como cara.
+
+### Formas
+
+Radios de 2 a 4 px. **Deliberadamente discretos**: las esquinas muy redondeadas
+leen como aplicación, no como joyería.
 
 ---
 
 ## Animaciones
 
-El sitio anima al hacer scroll: las secciones aparecen, las fotos se desplazan
-más lento que la página, las tarjetas del catálogo entran una detrás de otra y
-la cinta dorada se desliza sin corte.
+Una sola idea, repetida: los elementos aparecen con un desplazamiento corto y un
+fundido. No hay parallax, ni cintas deslizantes, ni entradas desde los costados,
+ni nada que siga moviéndose después de llegar a su lugar.
+
+Las microinteracciones que quedan son tres, y cada una tiene un motivo:
+
+- **Botones**: el relleno se retira hacia abajo en lugar de cambiar de color.
+- **Fotos**: zoom de 4% en 1,1 segundos. Apenas perceptible, es lo que lo hace caro.
+- **Tarjetas**: la acción "Ver pieza" aparece al pasar, y nunca ocupa lugar en reposo.
 
 Dos cosas a tener en cuenta si tocás el código:
 
 - **Nada queda invisible sin JavaScript.** La clase `js` que habilita los
   estados de entrada la agrega el propio script. Si falla, el contenido se ve.
-- **Se respeta la configuración del sistema.** Si en el celular está activado
-  "reducir movimiento", todo queda quieto y legible. Es una opción de
-  accesibilidad para quienes sufren mareos con las animaciones.
+- **Se respeta "reducir movimiento"** del sistema: todo queda quieto y legible.
 
 ---
 

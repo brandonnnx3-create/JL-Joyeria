@@ -10,6 +10,15 @@
    repetir. La "img" es la ruta al archivo dentro de img/productos/.
 
    categoria: "anillos" | "dijes" | "cadenas" | "aros" | "sets"
+
+   etiqueta:  texto corto que aparece sobre la foto. Es opcional y
+              conviene usarlo poco: si todas las piezas llevan una,
+              ninguna destaca. Tres o cuatro como máximo.
+
+              Podés poner "Nuevo", "Últimas unidades" o "Más vendido",
+              PERO sólo si es cierto. Una etiqueta de urgencia falsa
+              se nota, y cuando el cliente la descubre pierde la
+              confianza en todo el resto del catálogo.
    ============================================================ */
 
 const CATEGORIAS = [
@@ -33,7 +42,6 @@ const PRODUCTOS = [
     material: "Plata 925 con terminación dorada",
     desc: "Marco circular grabado alrededor de una piedra central facetada. El modelo más pedido de la casa.",
     piedras: ["Cristal", "Rosa", "Granate"],
-    destacado: true,
   },
   {
     id: "anillo-02",
@@ -44,7 +52,6 @@ const PRODUCTOS = [
     material: "Plata 925 con terminación dorada",
     desc: "Marco cuadrado de canto ancho con piedra talla princesa. Base sólida, cómodo de usar todo el día.",
     piedras: ["Rosa", "Azul", "Verde", "Violeta"],
-    destacado: true,
   },
   {
     id: "anillo-03",
@@ -84,8 +91,8 @@ const PRODUCTOS = [
     img: "img/productos/anillo-06.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "El Quadra en toda su carta de piedras. Elegí el color al hacer el pedido.",
+    etiqueta: "Selección",
     piedras: ["Negro", "Granate", "Verde", "Turquesa", "Violeta", "Cristal", "Ámbar"],
-    destacado: true,
   },
   {
     id: "anillo-07",
@@ -138,7 +145,6 @@ const PRODUCTOS = [
     material: "Plata 925 con terminación dorada",
     desc: "Cadena con dije, aros y anillo a juego, en piedra rosa. Viene en estuche, listo para regalar.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
-    destacado: true,
   },
   {
     id: "set-02",
@@ -179,7 +185,6 @@ const PRODUCTOS = [
     material: "Plata 925 con terminación dorada",
     desc: "Verde esmeralda en las tres piezas, sobre cadena figaro. Uno de los más elegidos para regalo.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
-    destacado: true,
   },
   {
     id: "set-06",
@@ -229,8 +234,8 @@ const PRODUCTOS = [
     img: "img/productos/set-10.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Dije rectangular de dos barras en azul, con aros a juego. La pieza de mayor tamaño del catálogo.",
+    etiqueta: "Selección",
     piezas: ["Cadena con dije", "Aros"],
-    destacado: true,
   },
 
   /* ---------------- DIJES ---------------- */
@@ -284,8 +289,8 @@ const PRODUCTOS = [
     img: "img/productos/cadena-02.jpg",
     material: "Plata 925, dije con terminación dorada",
     desc: "El mismo tejido en cuatro largos, de 40 a 55 cm, para superponer varias a distinta altura.",
+    etiqueta: "Selección",
     piedras: ["Cristal", "Granate", "Rosa", "Negro"],
-    destacado: true,
   },
   {
     id: "cadena-03",
