@@ -355,14 +355,42 @@ la ficha usa dos columnas —foto a la izquierda, información a la derecha— p
 que la descripción, el material y los colores se vean sin scrollear. En celular
 se apilan, con la foto acotada a 30vh.
 
-**La altura de la foto la define el contenedor** (`.detail__media`), no la
-imagen. Si se la dejaba a la imagen con su proporción 3:4, la fila de la grilla
-se calculaba mal y la foto terminaba montándose sobre el título en el celular.
-Si cambiás ese encuadre, cambiá el `height` del contenedor, no el de la `img`.
+**El recuadro de la foto tiene la proporción real de las fotos** (760×1351, o
+sea 9:16) y usa `object-fit: contain`. Así la pieza entra entera, sin recorte ni
+bandas. Un recuadro apaisado obliga a recortar y corta el producto, que es
+justo lo que no se puede hacer en la ficha.
+
+La altura la define el contenedor (`.detail__media`), no la imagen: si se la
+deja a la imagen, la fila de la grilla se calcula mal y la foto termina
+montándose sobre el título en el celular. Si cambiás el encuadre, cambiá el
+`height` del contenedor, no el de la `img`.
+
+**Si subís fotos con otra proporción**, entran completas gracias a `contain`,
+pero van a quedar con bandas a los lados. Lo ideal es mantener el formato
+vertical 9:16 de las actuales.
 
 El fondo oscurecido vive en el mismo elemento que envuelve la ventana
 (`.modal-wrap`), así el clic en el vacío llega al elemento que lo pinta. Cerrar
 funciona de tres formas: la cruz, el clic afuera y la tecla Escape.
+
+---
+
+## Los encuadres de las fotos
+
+Las 27 fotos son verticales de 760×1351 (9:16). Cada lugar donde aparecen tiene
+su propio encuadre, elegido según cuánto importa ver la pieza completa:
+
+| Dónde | Encuadre | Se recorta |
+|---|---|---|
+| **Ficha de producto** | 9:16, igual que la foto | **Nada** |
+| Tarjeta del catálogo | 2:3 | 16% |
+| Tarjeta de categoría | 2:3 | 8% |
+| Hero y secciones editoriales | 4:5 | 30% |
+
+En la ficha no se recorta nada porque es donde el cliente decide la compra. En
+los encuadres compositivos el recorte es a propósito —una foto 9:16 entera haría
+el hero larguísimo— y va corrido hacia arriba (`object-position: center 38%`),
+que es donde está la pieza en casi todas las tomas.
 
 ---
 
