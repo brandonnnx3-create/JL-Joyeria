@@ -4,7 +4,8 @@
 exactamente la misma página —mismo layout, misma tipografía, mismas
 animaciones, mismo catálogo, mismo carrito, mismo checkout por WhatsApp— con
 una sola diferencia: la paleta de colores. El visitante elige con cuál navegar
-desde una barra flotante, como un selector de tema claro/oscuro.
+desde un ícono en el header, al lado del carrito, como un selector de tema
+claro/oscuro.
 
 | | Archivo | Paleta |
 |---|---|---|
@@ -24,16 +25,16 @@ En el sitio publicado son:
 - Oscura → `https://TU-USUARIO.github.io/JL-Joyeria/`
 - Clara → `https://TU-USUARIO.github.io/JL-Joyeria/clara.html`
 
-Abajo de cada página hay una barra flotante (`css/tema.css`) para pasar de una
-a la otra. Es HTML puro —dos links, sin JavaScript—, así que no hay nada que
-mantener ahí más allá de los dos `<a href>`. El carrito se conserva al
-cambiar de versión.
+En el header de cada página, junto al botón del carrito, hay un ícono
+(sol en la oscura, luna en la clara) que linkea directo a la otra versión. Es
+HTML puro —un `<a href="...">` con un SVG adentro, sin JavaScript—, así que no
+hay nada que mantener ahí. El carrito se conserva al cambiar de versión.
 
 Si en algún momento se quisiera dejar una sola versión, son dos pasos
 manuales y reversibles con `git`: borrar el `.html` y el `.css` de la que se
-descarta, y sacar de la que queda el `<link>` a `css/tema.css` y el bloque
-`<nav class="tema-switch">`. `js/app.js` no distingue entre versiones —no hay
-ningún `if` de tema—, así que no hay nada que tocar ahí.
+descarta, y sacar de la que queda ese ícono de `.header__actions`. `js/app.js`
+no distingue entre versiones —no hay ningún `if` de tema—, así que no hay
+nada que tocar ahí.
 
 ---
 
@@ -384,7 +385,6 @@ clara.html              Versión clara
 admin.html              Panel de administración
 css/oscura.css          Estilos de la versión oscura
 css/clara.css           Estilos de la versión clara
-css/tema.css            Barra flotante para elegir versión
 css/admin.css           Estilos del panel
 js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO (lo usan las dos)

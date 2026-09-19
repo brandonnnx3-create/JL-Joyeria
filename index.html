@@ -18,9 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/oscura.css">
-<link rel="stylesheet" href="css/tema.css">
-</head>
+<link rel="stylesheet" href="css/oscura.css"></head>
 <body>
 
 <!-- Textura del fondo: grano finísimo y viñeta en los bordes.
@@ -47,6 +45,12 @@
     </nav>
 
     <div class="header__actions">
+      <a class="icon-btn" href="clara.html" aria-label="Ver la versión clara">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"/>
+          <path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/>
+        </svg>
+      </a>
       <button class="icon-btn cart-btn" id="openCart" aria-label="Abrir el carrito">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -270,11 +274,6 @@
 <button class="totop" id="toTop" aria-label="Volver arriba" hidden>
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
-
-<nav class="tema-switch" aria-label="Elegir versión de la tienda">
-  <a href="index.html" aria-current="page">Oscura</a>
-  <a href="clara.html">Clara</a>
-</nav>
 
 <div id="layer"></div>
 
