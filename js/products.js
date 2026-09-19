@@ -1,40 +1,23 @@
 /* ============================================================
    ROMERO JOYERÍA — CATÁLOGO
    ------------------------------------------------------------
-   ⚠️ LOS PRECIOS SON DE EJEMPLO. Están puestos para que el
-   sitio funcione y se vea completo. Reemplazá cada "precio"
-   por el tuyo real antes de publicar.
+   Generado desde el panel el 18 de septiembre de 2026 a las 11:37 p. m..
+   Se puede editar a mano igual: es un archivo común.
 
-   Cómo agregar un producto: copiá un bloque { ... } completo,
-   pegalo abajo y cambiale los valores. El "id" no se puede
-   repetir. La "img" es la ruta al archivo dentro de img/productos/.
+   categoria: "todos" | "anillos" | "sets" | "dijes" | "cadenas" | "aros"
 
-   categoria: "anillos" | "dijes" | "cadenas" | "aros" | "sets"
-
-   stock:     unidades disponibles. Es opcional:
-                sin el campo  -> la pieza se vende sin control de stock
-                0             -> se muestra "Agotado" y no se puede comprar
-                1, 2 o 3      -> se muestra "Últimas unidades" solo
-                                 si la pieza no tiene otra etiqueta
-              El carrito no deja pedir más unidades de las que hay.
-
-   etiqueta:  texto corto que aparece sobre la foto. Es opcional y
-              conviene usarlo poco: si todas las piezas llevan una,
-              ninguna destaca. Tres o cuatro como máximo.
-
-              Podés poner "Nuevo", "Últimas unidades" o "Más vendido",
-              PERO sólo si es cierto. Una etiqueta de urgencia falsa
-              se nota, y cuando el cliente la descubre pierde la
-              confianza en todo el resto del catálogo.
+   stock:     unidades disponibles. Sin el campo, la pieza se
+              vende sin control. 0 es agotado y 3 o menos
+              muestra "Últimas unidades".
    ============================================================ */
 
 const CATEGORIAS = [
-  { id: "todos",   nombre: "Todo",    desc: "La colección completa" },
+  { id: "todos", nombre: "Todo", desc: "La colección completa" },
   { id: "anillos", nombre: "Anillos", desc: "Sellos, marcos y solitarios en plata 925" },
-  { id: "sets",    nombre: "Sets",    desc: "Cadena, dije, aros y anillo a juego, en su estuche" },
-  { id: "dijes",   nombre: "Dijes",   desc: "Colgantes sueltos para armar tu cadena" },
+  { id: "sets", nombre: "Sets", desc: "Cadena, dije, aros y anillo a juego, en su estuche" },
+  { id: "dijes", nombre: "Dijes", desc: "Colgantes sueltos para armar tu cadena" },
   { id: "cadenas", nombre: "Cadenas", desc: "Cadenas de plata con dije incluido" },
-  { id: "aros",    nombre: "Aros",    desc: "Aros de abroche a presión" },
+  { id: "aros", nombre: "Aros", desc: "Aros de abroche a presión" },
 ];
 
 const PRODUCTOS = [
@@ -42,7 +25,7 @@ const PRODUCTOS = [
   /* ---------------- ANILLOS ---------------- */
   {
     id: "anillo-01",
-    nombre: "Anillo Aura",
+    nombre: "Anillo Bvlgari",
     categoria: "anillos",
     precio: 18500,
     img: "img/productos/anillo-01.jpg",
@@ -52,7 +35,7 @@ const PRODUCTOS = [
   },
   {
     id: "anillo-02",
-    nombre: "Anillo Quadra",
+    nombre: "Anillo Quadra Bvlgari",
     categoria: "anillos",
     precio: 18500,
     img: "img/productos/anillo-02.jpg",
@@ -72,13 +55,13 @@ const PRODUCTOS = [
   },
   {
     id: "anillo-04",
-    nombre: "Anillo Aura Fino",
+    nombre: "Anillo Fino Bvlgari",
     categoria: "anillos",
     precio: 16900,
     img: "img/productos/anillo-04.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Frente circular sobre banda delgada. El más discreto de la línea, pensado para uso diario.",
-    piedras: ["Rosa", "Cristal", "Dorado"],
+    piedras: ["Cristal", "Rosa", "Dorado"],
   },
   {
     id: "anillo-05",
@@ -92,146 +75,155 @@ const PRODUCTOS = [
   },
   {
     id: "anillo-06",
-    nombre: "Anillo Quadra Color",
+    nombre: "Anillo Bvlgari Quadra Color",
     categoria: "anillos",
     precio: 18500,
     img: "img/productos/anillo-06.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "El Quadra en toda su carta de piedras. Elegí el color al hacer el pedido.",
+    piedras: ["Cristal", "Turquesa", "Verde", "Violeta", "Granate", "Negro", "Ámbar"],
     etiqueta: "Selección",
-    piedras: ["Negro", "Granate", "Verde", "Turquesa", "Violeta", "Cristal", "Ámbar"],
   },
   {
     id: "anillo-07",
-    nombre: "Anillo Aura Color",
+    nombre: "Anillo Bvlgari Color",
     categoria: "anillos",
     precio: 18500,
     img: "img/productos/anillo-07.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "El Aura en toda su carta de piedras, del turquesa al negro profundo.",
-    piedras: ["Turquesa", "Verde", "Violeta", "Cristal", "Rosa", "Azul", "Blanco"],
+    piedras: ["Cristal", "Blanco", "Rosa", "Azul", "Turquesa", "Verde", "Violeta"],
   },
   {
     id: "anillo-08",
-    nombre: "Anillo Aura Estriado",
+    nombre: "Anillo Bvlgari Grueso",
     categoria: "anillos",
     precio: 19900,
     img: "img/productos/anillo-08.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Los flancos llevan estrías talladas que acompañan la curva del dedo y hacen que la pieza tome más luz.",
-    piedras: ["Rosa", "Negro", "Granate", "Cristal", "Azul"],
+    piedras: ["Cristal", "Rosa", "Azul", "Granate", "Negro"],
   },
   {
     id: "anillo-09",
-    nombre: "Anillo Sello Quadra",
+    nombre: "Anillo Bvlgari Sello Quadra",
     categoria: "anillos",
     precio: 23900,
     img: "img/productos/anillo-09.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "El de mayor cuerpo del catálogo: frente cuadrado amplio sobre banda gruesa. Se usa solo, sin acompañantes.",
-    piedras: ["Azul", "Granate", "Negro", "Violeta", "Rosa", "Turquesa"],
+    piedras: ["Rosa", "Azul", "Turquesa", "Violeta", "Granate", "Negro"],
   },
   {
     id: "anillo-10",
-    nombre: "Anillo Marquise",
+    nombre: "Anillo Marquise Bvlgari",
     categoria: "anillos",
     precio: 20900,
     img: "img/productos/anillo-10.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Frente en forma de ojo, alargado sobre el dedo. La silueta más distinta de la colección.",
-    piedras: ["Violeta", "Cristal", "Rosa", "Ámbar"],
+    piedras: ["Cristal", "Rosa", "Violeta", "Ámbar"],
   },
 
   /* ---------------- SETS ---------------- */
   {
     id: "set-01",
-    nombre: "Set Aura Rosa",
+    nombre: "Set Bvlgari Rosa",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-01.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Cadena con dije, aros y anillo a juego, en piedra rosa. Viene en estuche, listo para regalar.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-02",
-    nombre: "Set Aura Violeta",
+    nombre: "Set Bvlgari Violeta",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-02.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Las tres piezas del Aura en amatista. Cadena eslabón figaro y estuche incluido.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-03",
-    nombre: "Set Aura Azul",
+    nombre: "Set Bvlgari Azul",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-03.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Piedra azul profunda sobre cadena fina. El contraste más marcado de la línea.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-04",
-    nombre: "Set Quadra Cristal",
+    nombre: "Set Bvlgari Quadra Cristal",
     categoria: "sets",
     precio: 44900,
     img: "img/productos/set-04.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Dije cuadrado y anillo a juego en piedra cristal. Dos piezas, en estuche.",
     piezas: ["Cadena con dije", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-05",
-    nombre: "Set Aura Verde",
+    nombre: "Set Bvlgari Verde",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-05.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Verde esmeralda en las tres piezas, sobre cadena figaro. Uno de los más elegidos para regalo.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-06",
-    nombre: "Set Aura Ámbar",
+    nombre: "Set Bvlgari Ámbar",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-06.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Piedra ámbar cálida sobre cadena fina de plata. El tono más suave del catálogo.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-07",
-    nombre: "Set Quadra Granate",
+    nombre: "Set Bvlgari Quadra Granate",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-07.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Rojo granate en marco cuadrado, las tres piezas a juego dentro del estuche.",
     piezas: ["Cadena con dije", "Aros", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-08",
-    nombre: "Set Quadra Azul",
+    nombre: "Set Bvlgari Quadra Azul",
     categoria: "sets",
     precio: 46900,
     img: "img/productos/set-08.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Dije y aros cuadrados en azul noche, sobre cadena eslabón figaro.",
     piezas: ["Cadena con dije", "Aros"],
+    piedras: [],
   },
   {
     id: "set-09",
-    nombre: "Set Quadra Rosa",
+    nombre: "Set Bvlgari Quadra Rosa",
     categoria: "sets",
     precio: 44900,
     img: "img/productos/set-09.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Cadena con dije cuadrado rosa y anillo a juego. Dos piezas, en estuche.",
     piezas: ["Cadena con dije", "Anillo"],
+    piedras: [],
   },
   {
     id: "set-10",
@@ -241,24 +233,25 @@ const PRODUCTOS = [
     img: "img/productos/set-10.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Dije rectangular de dos barras en azul, con aros a juego. La pieza de mayor tamaño del catálogo.",
-    etiqueta: "Selección",
     piezas: ["Cadena con dije", "Aros"],
+    piedras: [],
+    etiqueta: "Selección",
   },
 
   /* ---------------- DIJES ---------------- */
   {
     id: "dije-01",
-    nombre: "Dije Quadra",
+    nombre: "Dije Bvlgari Quadra",
     categoria: "dijes",
     precio: 12900,
     img: "img/productos/dije-01.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Colgante cuadrado suelto, sin cadena. Entra en cualquier cadena fina. Elegí el color de la piedra.",
-    piedras: ["Rosa", "Granate", "Negro", "Cristal", "Azul", "Verde"],
+    piedras: ["Cristal", "Rosa", "Azul", "Verde", "Granate", "Negro"],
   },
   {
     id: "dije-02",
-    nombre: "Dije Aura",
+    nombre: "Dije Bvlgari",
     categoria: "dijes",
     precio: 12900,
     img: "img/productos/dije-02.jpg",
@@ -268,57 +261,58 @@ const PRODUCTOS = [
   },
   {
     id: "dije-03",
-    nombre: "Dije Quadra Mini",
+    nombre: "Dije Bvlgari Quadra Mini",
     categoria: "dijes",
     precio: 10900,
     img: "img/productos/dije-03.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "La versión chica del Quadra, para usar de a varios en la misma cadena o de a uno bien discreto.",
-    piedras: ["Cristal", "Negro", "Granate", "Azul", "Verde", "Violeta", "Rosa", "Blanco"],
+    piedras: ["Cristal", "Blanco", "Rosa", "Azul", "Verde", "Violeta", "Granate", "Negro"],
   },
 
   /* ---------------- CADENAS ---------------- */
   {
     id: "cadena-01",
-    nombre: "Cadena con Dije Aura",
+    nombre: "Cadena con Dije Bvlgari",
     categoria: "cadenas",
     precio: 27900,
     img: "img/productos/cadena-01.jpg",
     material: "Plata 925, dije con terminación dorada",
     desc: "Cadena de plata tejido trenzado con dije circular incluido. Largo 45 cm.",
-    piedras: ["Cristal", "Granate", "Rosa", "Negro"],
+    piedras: ["Cristal", "Rosa", "Granate", "Negro"],
   },
   {
     id: "cadena-02",
-    nombre: "Cadena Trenzada con Dije",
+    nombre: "Cadena Trenzada con Dije Bvlgari",
     categoria: "cadenas",
     precio: 27900,
     img: "img/productos/cadena-02.jpg",
     material: "Plata 925, dije con terminación dorada",
     desc: "El mismo tejido en cuatro largos, de 40 a 55 cm, para superponer varias a distinta altura.",
+    piedras: ["Cristal", "Rosa", "Granate", "Negro"],
     etiqueta: "Selección",
-    piedras: ["Cristal", "Granate", "Rosa", "Negro"],
   },
   {
     id: "cadena-03",
-    nombre: "Cadena con Dije Quadra",
+    nombre: "Cadena con Dije Bvlgari Quadra",
     categoria: "cadenas",
     precio: 27900,
     img: "img/productos/cadena-03.jpg",
     material: "Plata 925, dije con terminación dorada",
     desc: "Cadena de plata con dije cuadrado incluido. Largo 45 cm.",
-    piedras: ["Negro", "Cristal", "Granate"],
+    piedras: ["Cristal", "Granate", "Negro"],
   },
 
   /* ---------------- AROS ---------------- */
   {
     id: "aro-01",
-    nombre: "Aros Aura y Quadra",
+    nombre: "Aros Bvlgari y Quadra",
     categoria: "aros",
     precio: 14900,
     img: "img/productos/aro-01.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Aros de abroche a presión, en marco redondo o cuadrado. Toda la carta de piedras disponible.",
-    piedras: ["Violeta", "Verde", "Turquesa", "Negro", "Azul", "Cristal", "Granate", "Ámbar", "Rosa"],
+    piedras: ["Cristal", "Rosa", "Azul", "Turquesa", "Verde", "Violeta", "Granate", "Negro", "Ámbar"],
   },
+
 ];
