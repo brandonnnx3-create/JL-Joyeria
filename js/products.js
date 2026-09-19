@@ -1,7 +1,7 @@
 /* ============================================================
    ROMERO JOYERÍA — CATÁLOGO
    ------------------------------------------------------------
-   Generado desde el panel el 18 de septiembre de 2026 a las 11:37 p. m..
+   Generado desde el panel el 18 de septiembre de 2026 a las 11:41 p. m..
    Se puede editar a mano igual: es un archivo común.
 
    categoria: "todos" | "anillos" | "sets" | "dijes" | "cadenas" | "aros"
