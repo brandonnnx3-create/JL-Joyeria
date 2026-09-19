@@ -258,13 +258,13 @@
           ? '<span class="card__flag' + (agotado(p) ? " card__tag--out" : "") + '">' +
             esc(etiqueta) + "</span>"
           : "") +
-        '<span class="card__view">Ver pieza</span>' +
       "</div>" +
       '<div class="card__body">' +
         '<span class="card__meta">' + nombreCat + "</span>" +
         '<span class="card__name">' + esc(p.nombre) + "</span>" +
         '<span class="card__price">' + money(p.precio) + "</span>" +
         stoneDots(p) +
+        '<span class="card__view">Ver pieza</span>' +
       "</div></button>"
     );
   }

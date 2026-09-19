@@ -426,13 +426,13 @@ contraste sobre un fondo casi blanco: por eso en clara es más profundo
 precio es justamente lo que abarata la percepción: lo usan las tiendas que
 quieren parecer caras, no las que lo son.
 
-Un puñado de elementos que se apoyan directamente sobre las fotos (la etiqueta
-"Selección"/"Agotado", el aviso "Ver pieza" al pasar el mouse) invierten la
-polaridad del chip en lugar de solo cambiar un color: en la oscura son un chip
-oscuro con texto dorado claro, en la clara un chip claro con texto dorado
-oscuro. Es la misma pieza de UI, en la misma posición, con el mismo
-comportamiento; lo que cambia es qué combinación de token se usa para que siga
-leyéndose bien sobre las mismas fotografías.
+La etiqueta que se apoya directamente sobre la foto (`card__flag`:
+"Últimas unidades" / "Agotado") invierte la polaridad del chip en lugar de
+solo cambiar un color: en la oscura es un chip oscuro con texto dorado claro,
+en la clara un chip claro con texto dorado oscuro. Es la misma pieza de UI,
+en la misma posición, con el mismo comportamiento; lo que cambia es qué
+combinación de token se usa para que siga leyéndose bien sobre las mismas
+fotografías.
 
 ### Tipografía
 
@@ -514,8 +514,8 @@ Las dos versiones comparten el mismo movimiento, definido una sola vez en
   infinito entre el hero y las secciones editoriales.
 - **Botones**: el relleno se retira hacia abajo en lugar de cambiar de color.
 - **Fotos del catálogo**: zoom de 4% en 1,1 segundos al pasar el mouse.
-- **Tarjetas**: la acción "Ver pieza" aparece al pasar, y nunca ocupa lugar en
-  reposo.
+- **Tarjetas**: "Ver pieza" es texto fijo debajo de la foto (nunca se
+  superpone a la imagen); se ilumina un poco al pasar el mouse.
 - **Header y barra de progreso**: el header se opaca al bajar, y una línea
   dorada arriba marca cuánto falta para llegar al final de la página.
 

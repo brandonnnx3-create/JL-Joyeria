@@ -860,20 +860,6 @@ h1, h2, h3, .serif {
 
 .card:hover .card__media img { transform: scale(1.06); filter: saturate(1.03); }
 
-/* Velo que sube desde abajo al pasar el mouse. */
-.card__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(246,243,238,.88), transparent 52%);
-  opacity: 0;
-  transition: opacity .35s var(--ease);
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-.card:hover .card__media::after { opacity: 1; }
-
 .card__flag {
   position: absolute;
   top: 10px;
@@ -891,27 +877,16 @@ h1, h2, h3, .serif {
 }
 
 .card__view {
-  position: absolute;
-  inset-inline: 10px;
-  bottom: 10px;
-  z-index: 2;
-  border: 1px solid var(--gold-dim);
-  background: rgba(246,243,238,.85);
+  margin-top: 4px;
   color: var(--gold);
   font-size: .625rem;
   letter-spacing: .2em;
   text-transform: uppercase;
-  padding: 11px;
-  border-radius: var(--r-pill);
-  text-align: center;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .3s var(--ease), transform .3s var(--ease-out);
-  backdrop-filter: blur(4px);
+  transition: color .2s var(--ease);
 }
 
 .card:hover .card__view,
-.card:focus-visible .card__view { opacity: 1; transform: translateY(0); }
+.card:focus-visible .card__view { color: var(--bone); }
 
 .card__body { padding-top: 15px; display: flex; flex-direction: column; gap: 5px; }
 
@@ -1553,7 +1528,6 @@ h1, h2, h3, .serif {
   .brand__mark { width: 40px; height: 40px; }
   .section { padding-block: 40px 58px; }
   .footer__grid { grid-template-columns: 1fr; }
-  .card__view { display: none; }
   .strip__rule { display: none; }
   .hero__scroll { display: none; }
   .story__n { font-size: 1.7rem; }
