@@ -234,67 +234,84 @@ Los dos sirven el sitio por HTTPS sin configurar nada.
 Desde ahí se manejan precios, stock, piezas, categorías, costos de envío y datos
 de contacto, sin tocar código.
 
-### Dos formas de publicar
+### Cómo publica
 
-**Conectado con GitHub (recomendado).** El panel sube las fotos y publica los
-cambios solo. El flujo completo es: editás, tocás **Publicar cambios**, y un
-minuto después la tienda está actualizada. Nadie entra a GitHub.
+El panel **no habla con GitHub**: le manda los cambios al propio sitio, a las
+rutas `/api/*` que atiende `src/worker.js`, y ese Worker es el que escribe en
+el repositorio con un token que vive del lado del servidor como secreto de
+Cloudflare.
 
-**Sin conectar.** El botón **Descargar archivos** baja `products.js` y
-`config.js` para subirlos a mano a la carpeta `js` del repositorio. Es el
-camino largo, pero no necesita token.
+Para quien administra la tienda eso significa: entra con la contraseña del
+panel, edita, toca **Publicar cambios** y listo. No hay ninguna cuenta que
+conectar, ningún token que generar y ningún acceso al GitHub de quien
+desarrolló el sitio.
 
-### Conectar el panel con GitHub
+```
+panel (admin.html)  ──contraseña──►  Worker (/api/*)  ──token secreto──►  GitHub
+                                                                           │
+                                            Cloudflare redespliega  ◄──────┘
+```
 
-Se hace una sola vez, desde el botón **Conectar con GitHub**:
+La contraseña cumple dos papeles: abre el panel y es la credencial con la que
+el Worker acepta el cambio. Por eso el Worker la valida del lado del servidor:
+sin ella, las rutas `/api/*` devuelven 401 y no escriben nada.
 
-1. Entrar a **Settings → Developer settings → Fine-grained tokens** en GitHub.
-2. En **Repository access**, elegir **Only select repositories** y marcar
-   únicamente este repositorio.
-3. En **Permissions → Repository permissions**, poner **Contents** en
-   **Read and write**. Ningún otro permiso hace falta.
-4. Generar el token, copiarlo y pegarlo en el panel.
+### Qué hay que configurar (una sola vez)
 
-El panel prueba la conexión antes de guardarla: si el token no sirve o no tiene
-permiso de escritura, lo dice en el momento en lugar de fallar al publicar.
+En Cloudflare, en el Worker `jl-joyeria` → **Settings → Variables and Secrets**,
+dos secretos:
 
-### Sobre el token
+| Secreto | Valor |
+|---|---|
+| `ADMIN_KEY` | La misma contraseña con la que se entra al panel. |
+| `GITHUB_TOKEN` | Un fine-grained token de GitHub: **Only select repositories** → este repositorio, y **Contents: Read and write**. Ningún otro permiso. |
 
-Queda guardado **en el navegador de quien administra**, y sólo viaja a
-`api.github.com`. No aparece en la dirección ni se escribe en ningún lado.
+Sin esos dos secretos el panel deja publicar hasta el último paso y ahí avisa
+que el sitio todavía no está configurado, en lugar de fallar de forma confusa.
 
-Un token limitado a este repositorio y al permiso Contents no puede tocar nada
-más de la cuenta: ni otros repositorios, ni la configuración, ni los datos
-personales. Lo peor que podría hacer alguien con él es cambiar el contenido de
-esta tienda, y eso queda registrado en el historial de commits.
+El token es de quien administra el repositorio, nunca del cliente, y no sale
+del servidor: el navegador del cliente jamás lo ve.
 
-**Aun así, es una llave.** Si el panel se usa en una computadora compartida,
-conviene usar la descarga a mano, o desconectar al terminar con el botón
-**Desconectar**.
+### Cambiar la contraseña del panel
+
+Son dos lugares, y tienen que quedar iguales:
+
+1. En `admin.html`, el `HASH` del script del login — es el SHA-256 de la
+   contraseña nueva.
+2. En Cloudflare, el secreto `ADMIN_KEY`.
+
+Si se cambia uno solo: con el hash viejo no se entra al panel, y con el
+`ADMIN_KEY` viejo se entra pero no se puede publicar.
 
 ### Subir fotos
 
-Al editar una pieza, con el panel conectado aparece una zona para arrastrar la
-foto o elegirla del equipo. El panel:
+Al editar una pieza aparece una zona para arrastrar la foto o elegirla del
+equipo. El panel:
 
 - La achica a 1351 px de lado mayor y la recomprime a JPG de calidad 82,
   para que la tienda no se ponga lenta en el celular.
 - Le pone un nombre sin acentos ni espacios, con un sufijo que evita pisar una
   foto existente.
-- La sube al repositorio y la deja elegida en la pieza.
+- La manda al Worker, que la sube al repositorio, y la deja elegida en la pieza.
 
-La vista previa se ve al instante, pero **en la tienda aparece recién cuando
-publicás los cambios**: hasta entonces la foto está en el repositorio y la
-página publicada todavía no.
+La vista previa se ve al instante, pero **en la tienda aparece cuando termina
+de publicarse**: hasta entonces la foto está en el repositorio y la página
+publicada todavía no.
 
 Conviene que sean **verticales**, como las que ya están. Una apaisada entra
 igual, pero el panel avisa de que va a quedar con bandas a los costados.
 
-### Lo que no se puede hacer instantáneo
+### La demora
 
-Publicar dispara el workflow de GitHub Pages, que tarda cerca de un minuto. El
-panel se queda mirando ese proceso y avisa cuando termina, pero esa demora no
-se puede evitar sin cambiar de tecnología.
+Publicar escribe en el repositorio y Cloudflare vuelve a desplegar el sitio.
+Eso tarda cerca de un minuto: el cambio no es instantáneo. Es el precio de que
+la tienda sea estática (rápida, barata y sin base de datos que mantener).
+
+### La copia de respaldo
+
+**Descargar archivos** baja `products.js` y `config.js` tal como quedaron. No
+hace falta para publicar: está por si se quiere guardar una copia antes de un
+cambio grande.
 
 ### En el celular
 
@@ -346,32 +363,29 @@ siempre se puede volver atrás con `git`.
 
 ## Cuando la tienda pase al cliente
 
-Hoy el panel publica escribiendo en este repositorio de GitHub. Sirve para
-trabajar y para mostrar el sitio, pero **no conviene entregarlo así**: ataría al
-cliente a la cuenta de GitHub de quien desarrolló, y le exigiría tener cuenta de
-GitHub para cambiar un precio.
+Esto ya está resuelto: **el cliente no necesita cuenta de GitHub ni acceso a
+ninguna cuenta de quien desarrolló el sitio.** Entra a `admin.html` con una
+contraseña, edita y publica. El token que escribe en el repositorio vive como
+secreto del Worker, del lado del servidor.
 
-El motivo de fondo es que GitHub Pages es hosting estático: sirve archivos y no
-ejecuta nada, así que no hay dónde guardar una foto ni una base de datos. El
-token es un rodeo para escribir en el único lugar disponible.
+Lo que sí sigue siendo de quien desarrolló: el repositorio de GitHub y la
+cuenta de Cloudflare donde corre el Worker. Eso es una decisión comercial, no
+técnica — si el cliente tiene que ser dueño de su infraestructura, el camino
+es pasar el repositorio y el proyecto de Cloudflare a cuentas suyas, y volver
+a cargar los dos secretos ahí.
 
-### Qué hay que cambiar
+### Lo único que todavía no es instantáneo
 
-Para que el cliente suba una foto y la vea publicada al instante, hace falta un
-servicio que reciba y guarde. Tres caminos, de menor a mayor esfuerzo:
+Un cambio de precio o una foto nueva tardan cerca de un minuto en verse,
+porque publicar reescribe archivos del repositorio y Cloudflare vuelve a
+desplegar el sitio.
 
-1. **Supabase o Firebase.** Base de datos, almacenamiento de fotos y login,
-   gratis en este tamaño. El sitio puede quedarse donde está. El cliente entra
-   con su email y contraseña, sin relación con ninguna cuenta de GitHub.
-2. **Cloudflare.** Pages para el sitio, Workers como backend, R2 para las fotos
-   y D1 para el catálogo, todo con plan gratuito. Conviene si el dominio
-   también se compra ahí, porque queda una sola cuenta para todo.
-3. **Hosting con PHP.** El camino clásico: un backend propio con login y subida
-   de archivos. Control total, unos dólares por mes, y más para mantener.
-
-En los tres casos el trabajo es el mismo: el catálogo deja de vivir en
-`js/products.js` y pasa a leerse del servicio, y el panel deja de escribir en
-GitHub para escribir ahí. La tienda, el diseño y el checkout no cambian.
+Si algún día esa demora molesta, el cambio sería mover el catálogo fuera de
+`js/products.js` a un almacenamiento que el Worker lea en vivo (Cloudflare KV
+o D1, gratis en este tamaño). Ahí el precio cambiaría al instante y sin
+commits. No se hizo porque agrega piezas que hay que mantener para ganar
+cincuenta segundos, y porque tener cada cambio registrado en el historial de
+commits es, hoy, más útil que la velocidad.
 
 ### Sobre el dominio
 
@@ -390,10 +404,12 @@ js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO (lo usan las dos)
 js/app.js               Carrito, checkout y catálogo (lo usan las dos)
 js/admin.js             El panel de administración
-js/admin-git.js         Conexión con GitHub: subir fotos y publicar
+js/admin-api.js         El panel hablando con /api/* (no con GitHub)
+src/worker.js           El Worker: sirve el sitio y atiende /api/*
+wrangler.jsonc          Configuración del deploy en Cloudflare
 img/logo.png            El logo, recortado en círculo
 img/productos/          Las 27 fotos
-.github/workflows/      Publica el sitio solo en cada push
+.github/workflows/      Publica una copia en GitHub Pages en cada push
 ```
 
 **El catálogo y el checkout son compartidos.** Si cambiás un precio en

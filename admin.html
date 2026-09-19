@@ -25,34 +25,48 @@
 </div>
 
 <script>
+/* La contraseña no sólo abre el panel: es también la credencial con
+   la que el Worker acepta publicar. Por eso se recuerda el valor y no
+   un simple "ya entró". */
 (function () {
   var HASH = "4f172029651414efc60c0a0e9502065cae5cd791becce46c2dfd397531f83553";
-  var CLAVE = "rj_admin_ok_v1";
+  var CLAVE = "rj_admin_pass_v1";
   var gate = document.getElementById("loginGate");
   var form = document.getElementById("loginForm");
   var input = document.getElementById("loginPass");
   var error = document.getElementById("loginError");
-
-  function ocultarGate() {
-    gate.style.display = "none";
-  }
-
-  try {
-    if (localStorage.getItem(CLAVE) === "1") ocultarGate();
-  } catch (e) {}
 
   async function sha256Hex(texto) {
     var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
     return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
   }
 
+  function entrar(pass) {
+    window.__adminPass = pass;
+    /* Si el panel ya terminó de cargar, se le avisa ahora; si todavía
+       no, lo lee de window.__adminPass cuando arranque. */
+    if (typeof window.__adminListo === "function") window.__adminListo(pass);
+    gate.style.display = "none";
+  }
+
+  /* Al volver a entrar: se revalida el hash por si la contraseña cambió. */
+  try {
+    var guardada = localStorage.getItem(CLAVE);
+    if (guardada) {
+      sha256Hex(guardada).then(function (h) {
+        if (h === HASH) entrar(guardada);
+        else { try { localStorage.removeItem(CLAVE); } catch (e) {} }
+      });
+    }
+  } catch (e) {}
+
   form.addEventListener("submit", async function (ev) {
     ev.preventDefault();
-    var hash = await sha256Hex(input.value);
-    if (hash === HASH) {
-      try { localStorage.setItem(CLAVE, "1"); } catch (e) {}
+    var pass = input.value;
+    if (await sha256Hex(pass) === HASH) {
+      try { localStorage.setItem(CLAVE, pass); } catch (e) {}
       error.hidden = true;
-      ocultarGate();
+      entrar(pass);
     } else {
       error.hidden = false;
       input.value = "";
@@ -97,13 +111,6 @@
   <button class="tab" role="tab" data-panel="tienda" aria-selected="false">Envíos y contacto</button>
   <button class="tab" role="tab" data-panel="publicar" aria-selected="false">Cómo publicar</button>
 </nav>
-
-<div class="conexion" id="conexion" hidden>
-  <div class="wrap conexion__in">
-    <span class="conexion__txt" id="conexionTxt"></span>
-    <button class="btn btn--sm" id="btnConectar">Conectar con GitHub</button>
-  </div>
-</div>
 
 <main class="wrap">
 
@@ -218,14 +225,20 @@
   <section id="p-publicar" hidden>
     <div class="caja caja--ancha">
       <h2>Publicar los cambios</h2>
-
-      <div id="estadoConexion"></div>
+      <p class="prosa">
+        Los cambios que hacés acá se guardan primero en este navegador, y no
+        tocan la tienda hasta que tocás <strong>Publicar cambios</strong>.
+        Recién ahí se suben. Un minuto después están a la vista de todos.
+      </p>
+      <p class="prosa">
+        No hay nada más que configurar ni ninguna cuenta a la que entrar: la
+        contraseña con la que abrís el panel es todo lo que hace falta.
+      </p>
 
       <h2 style="margin-top:28px">Las fotos</h2>
       <p class="prosa">
         Al editar una pieza podés arrastrar una foto nueva o elegirla del equipo.
-        El panel la achica, la recomprime y la sube sola. No hay que entrar a
-        ningún lado.
+        El panel la achica, la recomprime y la sube sola.
       </p>
       <p class="prosa">
         Conviene que sean <strong>verticales</strong>, como las que ya están: es
@@ -233,12 +246,11 @@
         igual, pero se va a ver con bandas a los costados en la ficha.
       </p>
 
-      <h2 style="margin-top:28px">Si preferís no conectar GitHub</h2>
+      <h2 style="margin-top:28px">Copia de respaldo</h2>
       <p class="prosa">
-        El botón <strong>Descargar archivos</strong> sigue estando. Te baja
-        <code>products.js</code> y <code>config.js</code> para subirlos a mano a
-        la carpeta <code>js</code> del repositorio. Es el camino largo, pero no
-        necesita token.
+        <strong>Descargar archivos</strong> te baja el catálogo y la
+        configuración tal como quedaron. No hace falta para publicar: está por
+        si querés guardar una copia antes de un cambio grande.
       </p>
     </div>
   </section>
@@ -247,7 +259,7 @@
 
 <div id="capa"></div>
 
-<script src="js/admin-git.js"></script>
+<script src="js/admin-api.js"></script>
 <script src="js/config.js"></script>
 <script src="js/products.js"></script>
 <script src="js/admin.js"></script>

@@ -2,3 +2,8 @@
 Thumbs.db
 *.log
 .vscode/
+
+# Cloudflare: estado local de wrangler y secretos de desarrollo.
+# .dev.vars nunca va al repositorio: ahí viven los tokens.
+.wrangler/
+.dev.vars
