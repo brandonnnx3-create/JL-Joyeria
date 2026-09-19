@@ -1,35 +1,24 @@
 /* ============================================================
    ROMERO JOYERÍA — CONFIGURACIÓN
-   Este es el único archivo que necesitás tocar para poner el
-   sitio en marcha. Cambiá los valores entre comillas y listo.
+   ------------------------------------------------------------
+   Generado desde el panel el 18 de septiembre de 2026 a las 11:37 p. m..
+
+   El WhatsApp va en formato internacional, sólo números:
+   54 + 9 + característica sin el 0 + número sin el 15.
    ============================================================ */
 
 const CONFIG = {
-
-  /* --- TU NÚMERO DE WHATSAPP ---------------------------------
-     Formato internacional, SOLO números: sin +, sin espacios,
-     sin guiones y sin el 15.
-     Argentina = 54, luego 9, luego característica sin el 0.
-     Ejemplo Buenos Aires 11-2345-6789  ->  "5491123456789"
-     Ejemplo Córdoba    351-234-5678    ->  "5493512345678"
-
-     Si queda vacío o mal escrito, el checkout no manda al cliente
-     a un número equivocado: le muestra el pedido para copiar y
-     avisa que falta configurar la tienda.                        */
   whatsapp: "5491165668692",
 
-  /* --- DATOS DE LA MARCA ------------------------------------ */
   marca: "Romero Joyería",
-  instagram: "",            // ej: "rj.joyeria" (sin @). Vacío = no se muestra.
-  email: "",                // ej: "hola@rjjoyeria.com". Vacío = no se muestra.
+  instagram: "",
+  email: "",
   ciudad: "Buenos Aires, Argentina",
 
-  /* --- ENVÍOS Y PAGOS --------------------------------------- */
-  envioGratisDesde: 60000,  // $ a partir del cual el envío es gratis. 0 = nunca.
-  costoEnvio: 6500,         // $ de envío por correo.
+  envioGratisDesde: 60000,
+  costoEnvio: 6500,
   puntoRetiro: "Coordinamos punto de encuentro por WhatsApp",
 
-  /* --- MONEDA ----------------------------------------------- */
   moneda: "$",
   localeMoneda: "es-AR",
 };
