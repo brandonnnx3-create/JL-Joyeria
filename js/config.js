@@ -8,7 +8,7 @@
    ============================================================ */
 
 const CONFIG = {
-  whatsapp: "5491165668692",
+  whatsapp: "5492216056950",
 
   marca: "Romero Joyería",
   instagram: "",
