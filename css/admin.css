@@ -776,6 +776,29 @@ textarea.in { width: 100%; resize: vertical; min-height: 78px; line-height: 1.55
 
 .token-in { font-family: ui-monospace, Menlo, monospace; font-size: .8125rem; }
 
+/* ---------- Login ---------- */
+
+.login-box {
+  width: min(320px, calc(100vw - 40px));
+  padding: 32px 26px;
+  background: var(--sup);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.login-box__logo { margin: 0 auto 14px; border-radius: 50%; }
+
+.login-box h1 { font-size: 1.0625rem; font-weight: 500; margin-bottom: 6px; }
+
+.login-box__hint { color: var(--txt-2); font-size: .8125rem; margin: 0 0 20px; }
+
+.login-box .in { width: 100%; text-align: center; margin-bottom: 12px; }
+
+.login-box .btn { width: 100%; }
+
+.login-box__error { color: var(--err); font-size: .8125rem; margin: 14px 0 0; }
+
 @media (max-width: 680px) {
   .bar__acts .btn { flex: 1 1 100%; }
   .conexion__in { padding-block: 10px; }
