@@ -1,40 +1,43 @@
 # Romero Joyería — sitio web
 
-**El sitio tiene dos versiones de paleta, y las dos se publican.** Son
-exactamente la misma página —mismo layout, misma tipografía, mismas
-animaciones, mismo catálogo, mismo carrito, mismo checkout por WhatsApp— con
-una sola diferencia: la paleta de colores. El visitante elige con cuál navegar
-desde un ícono en el header, al lado del carrito, como un selector de tema
-claro/oscuro.
+**El sitio tiene dos paletas de color, elegibles en el momento, sin cambiar de
+URL.** Es una sola página —un solo `index.html`— con dos hojas de estilo
+intercambiables. El visitante elige con cuál navegar desde un ícono en el
+header, al lado del carrito (sol para pasar a la clara, luna para volver a la
+oscura), igual que cualquier selector de tema claro/oscuro. La elección queda
+guardada en ese navegador para la próxima visita.
 
-| | Archivo | Paleta |
+| | Hoja de estilos | Paleta |
 |---|---|---|
-| **Oscura** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. |
-| **Clara** | `clara.html` | Marfil, carbón y champagne como acento, sobre exactamente la misma estructura. |
+| **Oscura** (por defecto) | `css/oscura.css` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. |
+| **Clara** | `css/clara.css` | Marfil, carbón y champagne como acento, sobre exactamente la misma estructura. |
 
-Las dos tienen el hero en arco, las tres secciones editoriales numeradas
+Las dos comparten el hero en arco, las tres secciones editoriales numeradas
 (01/02/03), la cinta deslizante, el desplazamiento suave de las fotos y el
-bloque de garantías. Si cambiás algo de layout o de comportamiento, hacelo en
-`js/app.js` (es un solo archivo, lo usan las dos) y replicá el ajuste de color
-correspondiente en la hoja que no estés mirando —`css/oscura.css` y
+bloque de garantías —es literalmente el mismo HTML—. Si cambiás algo de
+layout o de comportamiento, hacelo en `js/app.js` y replicá el ajuste de
+color correspondiente en la hoja que no estés mirando: `css/oscura.css` y
 `css/clara.css` comparten exactamente los mismos selectores, solo cambian los
-valores de los tokens de color en el bloque `:root`—.
+valores de los tokens de color en el bloque `:root`.
 
-En el sitio publicado son:
+### Cómo funciona el cambio de tema
 
-- Oscura → `https://TU-USUARIO.github.io/JL-Joyeria/`
-- Clara → `https://TU-USUARIO.github.io/JL-Joyeria/clara.html`
+No hay dos páginas ni redirección: cambiar de tema reemplaza el `href` del
+`<link id="temaCss">` en caliente (`css/oscura.css` ⇄ `css/clara.css`), sin
+recargar. Así se conserva el carrito y la posición de scroll, y la URL nunca
+muestra `/clara` ni nada parecido.
 
-En el header de cada página, junto al botón del carrito, hay un ícono
-(sol en la oscura, luna en la clara) que linkea directo a la otra versión. Es
-HTML puro —un `<a href="...">` con un SVG adentro, sin JavaScript—, así que no
-hay nada que mantener ahí. El carrito se conserva al cambiar de versión.
+- La función que hace el cambio es `cambiarTema()` en `js/app.js`.
+- Qué botón se ve (el de "ir a la clara" o el de "ir a la oscura") lo decide
+  el CSS: cada hoja oculta el que no corresponde (`.tema-a-oscura` /
+  `.tema-a-clara`), así no hace falta JavaScript para eso.
+- Al volver a entrar, un script chico en el `<head>` de `index.html` lee la
+  preferencia guardada (`localStorage`) y pone la hoja correcta *antes* de
+  pintar la página, para que no haya un parpadeo del color equivocado.
 
-Si en algún momento se quisiera dejar una sola versión, son dos pasos
-manuales y reversibles con `git`: borrar el `.html` y el `.css` de la que se
-descarta, y sacar de la que queda ese ícono de `.header__actions`. `js/app.js`
-no distingue entre versiones —no hay ningún `if` de tema—, así que no hay
-nada que tocar ahí.
+Si en algún momento se quisiera dejar una sola paleta, es un paso manual y
+reversible con `git`: borrar la hoja que se descarta y, en `index.html`,
+sacar el botón correspondiente y dejar fijo el `href` de `#temaCss`.
 
 ---
 
@@ -101,9 +104,7 @@ reemplazalo y queda mejor en todos lados.
 
 ## Las secciones de la portada
 
-`index.html` y `clara.html` tienen el mismo cuerpo, en el mismo orden. Editar
-una sección implica editar las dos (son archivos separados, no un include), y
-conviene mantenerlas iguales salvo el color.
+Todas viven en el único `index.html`, en este orden:
 
 1. **Hero** — qué vendemos, en una frase, con la pieza a la vista en un marco
    en arco.
@@ -117,12 +118,12 @@ conviene mantenerlas iguales salvo el color.
 6. **Garantías** — tres puntos de confianza, sin iconografía.
 7. **Footer** — marca, colección y contacto.
 
-Todo está escrito a mano en cada `.html`. Las fotos de las secciones
-editoriales se cambian editando el `src` de su `<img>`.
+Todo está escrito a mano en el `.html`. Las fotos de las secciones editoriales
+se cambian editando el `src` de su `<img>`.
 
 **Los números de las secciones editoriales ("10 sets disponibles", "9 colores
 de piedra") están escritos a mano.** Si agregás o sacás productos, actualizalos
-en las dos páginas.
+ahí.
 
 ---
 
@@ -380,8 +381,7 @@ sitio esté donde esté, incluso a GitHub Pages.
 ## Estructura
 
 ```
-index.html              Versión oscura
-clara.html              Versión clara
+index.html              La tienda (las dos paletas viven acá)
 admin.html              Panel de administración
 css/oscura.css          Estilos de la versión oscura
 css/clara.css           Estilos de la versión clara
@@ -526,10 +526,10 @@ Dos cosas a tener en cuenta si tocás el código:
 - **Se respeta "reducir movimiento"** del sistema: todo queda quieto y legible,
   sin parallax ni cinta, en las dos versiones por igual.
 
-Como `js/app.js` es un solo archivo para las dos páginas, cualquier cambio acá
-—agregar una animación, sacar el parallax, lo que sea— aplica a las dos
-automáticamente. No hay una rama de código por versión: se eliminó a propósito
-para que no puedan volver a desincronizarse.
+Como `js/app.js` es un solo archivo para la única página, cualquier cambio
+acá —agregar una animación, sacar el parallax, lo que sea— aplica a las dos
+paletas automáticamente. No hay una rama de código por tema: se eliminó a
+propósito para que no puedan volver a desincronizarse.
 
 ---
 

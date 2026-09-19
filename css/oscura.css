@@ -293,6 +293,9 @@ h1, h2, h3, .serif {
 
 .cart-btn.bump { animation: bump .45s var(--ease); }
 
+/* Ya estamos en la oscura: se muestra el botón que lleva a la clara. */
+.tema-a-oscura { display: none; }
+
 @keyframes bump {
   0%, 100% { transform: scale(1); }
   35%      { transform: scale(1.22); }

@@ -10,10 +10,11 @@
 
   /* ============================================================
      VERSIÓN ACTIVA
-     Las dos versiones (index.html y clara.html) comparten
-     exactamente el mismo HTML y el mismo CSS estructural: sólo
-     cambian los valores de color en css/oscura.css y css/clara.css.
-     Por eso este archivo no necesita distinguir entre versiones.
+     Un solo archivo (index.html) con dos hojas de estilo
+     intercambiables: css/oscura.css y css/clara.css tienen
+     exactamente los mismos selectores, sólo cambian los valores de
+     color. La función cambiarTema(), más abajo, elige cuál está
+     activa.
      ============================================================ */
 
   /* ---------- Utilidades ---------- */
@@ -951,6 +952,28 @@
       }
     );
   }
+
+  /* ============================================================
+     SELECTOR DE VERSIÓN
+     Cambia la hoja de estilos activa sin navegar, así se conserva
+     el carrito y la posición de scroll. La elección queda guardada
+     para la próxima visita.
+     ============================================================ */
+
+  function cambiarTema(t) {
+    document.documentElement.setAttribute("data-tema", t);
+    const link = $("#temaCss");
+    if (link) link.setAttribute("href", "css/" + t + ".css");
+    const meta = $('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", t === "clara" ? "#F6F3EE" : "#0B0B0C");
+    try { localStorage.setItem("rj_tema", t); } catch (e) {}
+  }
+
+  const btnAClara = $("#temaAClara");
+  if (btnAClara) btnAClara.addEventListener("click", () => cambiarTema("clara"));
+
+  const btnAOscura = $("#temaAOscura");
+  if (btnAOscura) btnAOscura.addEventListener("click", () => cambiarTema("oscura"));
 
   loadCart();
   renderCatbar();

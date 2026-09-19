@@ -18,7 +18,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/oscura.css"></head>
+
+<!-- La versión (oscura/clara) se elige acá, antes de pintar nada, para que
+     no haya parpadeo del color equivocado al volver a entrar. -->
+<link id="temaCss" rel="stylesheet" href="css/oscura.css">
+<noscript><link rel="stylesheet" href="css/oscura.css"></noscript>
+<script>
+(function () {
+  try {
+    if (localStorage.getItem("rj_tema") === "clara") {
+      document.documentElement.setAttribute("data-tema", "clara");
+      document.getElementById("temaCss").setAttribute("href", "css/clara.css");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", "#F6F3EE");
+    }
+  } catch (e) {}
+})();
+</script>
+</head>
 <body>
 
 <!-- Textura del fondo: grano finísimo y viñeta en los bordes.
@@ -45,12 +61,17 @@
     </nav>
 
     <div class="header__actions">
-      <a class="icon-btn" href="clara.html" aria-label="Ver la versión clara">
+      <button class="icon-btn tema-a-clara" id="temaAClara" type="button" aria-label="Ver la versión clara">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
           <circle cx="12" cy="12" r="4.2"/>
           <path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/>
         </svg>
-      </a>
+      </button>
+      <button class="icon-btn tema-a-oscura" id="temaAOscura" type="button" aria-label="Ver la versión oscura">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+          <path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/>
+        </svg>
+      </button>
       <button class="icon-btn cart-btn" id="openCart" aria-label="Abrir el carrito">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
