@@ -334,6 +334,42 @@ siempre se puede volver atrás con `git`.
 
 ---
 
+---
+
+## Cuando la tienda pase al cliente
+
+Hoy el panel publica escribiendo en este repositorio de GitHub. Sirve para
+trabajar y para mostrar el sitio, pero **no conviene entregarlo así**: ataría al
+cliente a la cuenta de GitHub de quien desarrolló, y le exigiría tener cuenta de
+GitHub para cambiar un precio.
+
+El motivo de fondo es que GitHub Pages es hosting estático: sirve archivos y no
+ejecuta nada, así que no hay dónde guardar una foto ni una base de datos. El
+token es un rodeo para escribir en el único lugar disponible.
+
+### Qué hay que cambiar
+
+Para que el cliente suba una foto y la vea publicada al instante, hace falta un
+servicio que reciba y guarde. Tres caminos, de menor a mayor esfuerzo:
+
+1. **Supabase o Firebase.** Base de datos, almacenamiento de fotos y login,
+   gratis en este tamaño. El sitio puede quedarse donde está. El cliente entra
+   con su email y contraseña, sin relación con ninguna cuenta de GitHub.
+2. **Cloudflare.** Pages para el sitio, Workers como backend, R2 para las fotos
+   y D1 para el catálogo, todo con plan gratuito. Conviene si el dominio
+   también se compra ahí, porque queda una sola cuenta para todo.
+3. **Hosting con PHP.** El camino clásico: un backend propio con login y subida
+   de archivos. Control total, unos dólares por mes, y más para mantener.
+
+En los tres casos el trabajo es el mismo: el catálogo deja de vivir en
+`js/products.js` y pasa a leerse del servicio, y el panel deja de escribir en
+GitHub para escribir ahí. La tienda, el diseño y el checkout no cambian.
+
+### Sobre el dominio
+
+Es una decisión separada del hosting. Un dominio propio se puede apuntar al
+sitio esté donde esté, incluso a GitHub Pages.
+
 ## Estructura
 
 ```
