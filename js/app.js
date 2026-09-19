@@ -10,18 +10,11 @@
 
   /* ============================================================
      VERSIÓN ACTIVA
-     Las dos propuestas comparten catálogo, carrito y checkout.
-     Sólo cambian las clases del catálogo y el movimiento, que se
-     eligen acá según el data-tema del <html> de cada página.
+     Las dos propuestas (index.html y clara.html) comparten
+     exactamente el mismo HTML y el mismo CSS estructural: sólo
+     cambian los valores de color en css/oscura.css y css/clara.css.
+     Por eso este archivo no necesita distinguir entre versiones.
      ============================================================ */
-
-  const TEMA = document.documentElement.dataset.tema === "oscura" ? "oscura" : "clara";
-
-  const T = TEMA === "oscura"
-    ? { caja: "div", shot: "card__media", tag: "card__flag",
-        act: "card__view", filtro: "cat", filtroN: "cat__n", metaArriba: true }
-    : { caja: "span", shot: "shot card__shot", tag: "card__tag",
-        act: "card__act", filtro: "filter", filtroN: "filter__n", metaArriba: false };
 
   /* ---------- Utilidades ---------- */
 
@@ -219,9 +212,9 @@
     const bar = $("#catbar");
     bar.innerHTML = CATEGORIAS.filter((c) => countIn(c.id) > 0)
       .map((c) =>
-        '<button class="' + T.filtro + '" role="tab" data-cat="' + c.id + '" aria-selected="' +
+        '<button class="cat" role="tab" data-cat="' + c.id + '" aria-selected="' +
         (c.id === activeCat) + '">' + esc(c.nombre) +
-        '<span class="' + T.filtroN + '">' + countIn(c.id) + "</span></button>"
+        '<span class="cat__n">' + countIn(c.id) + "</span></button>"
       ).join("");
 
     const list = $("#footerCats");
@@ -237,44 +230,41 @@
     if (!list.length) return "";
     const shown = list.slice(0, 6);
     const rest = list.length - shown.length;
-    return "<" + T.caja + ' class="card__stones">' +
+    return '<div class="card__stones">' +
       shown.map((s) =>
         '<span class="dot" style="background:' + (STONE_HEX[s] || "#555") +
         '" title="' + esc(s) + '"></span>'
       ).join("") +
       (rest > 0 ? '<span class="dot--more">+' + rest + "</span>" : "") +
-      "</" + T.caja + ">";
+      "</div>";
   }
 
   function cardHTML(p, i) {
     const cat = CATEGORIAS.find((c) => c.id === p.categoria);
     const nombreCat = esc(cat ? cat.nombre : p.categoria);
-    const B = T.caja;
 
     /* La etiqueta cargada a mano gana; si no hay, el stock decide. */
     const etiqueta = p.etiqueta
       || (agotado(p) ? "Agotado" : quedanPocas(p) ? "Últimas unidades" : "");
 
-    const meta  = '<span class="card__meta">' + nombreCat + "</span>";
-    const name  = '<span class="card__name">' + esc(p.nombre) + "</span>";
-    const price = '<span class="card__price">' + money(p.precio) + "</span>";
-
     return (
       '<button class="card' + (agotado(p) ? " card--out" : "") + '"' +
       ' data-product="' + p.id + '" style="--i:' + (i % 9) + '"' +
       ' aria-label="Ver ' + esc(p.nombre) + '">' +
-      "<" + B + ' class="' + T.shot + '">' +
+      '<div class="card__media">' +
         '<img src="' + p.img + '" alt="' + esc(p.nombre) + '" loading="lazy" width="760" height="1351">' +
         (etiqueta
-          ? '<span class="' + T.tag + (agotado(p) ? " card__tag--out" : "") + '">' +
+          ? '<span class="card__flag' + (agotado(p) ? " card__tag--out" : "") + '">' +
             esc(etiqueta) + "</span>"
           : "") +
-        '<span class="' + T.act + '">Ver pieza</span>' +
-      "</" + B + ">" +
-      "<" + B + ' class="card__body">' +
-        (T.metaArriba ? meta + name + price : name + price + meta) +
+        '<span class="card__view">Ver pieza</span>' +
+      "</div>" +
+      '<div class="card__body">' +
+        '<span class="card__meta">' + nombreCat + "</span>" +
+        '<span class="card__name">' + esc(p.nombre) + "</span>" +
+        '<span class="card__price">' + money(p.precio) + "</span>" +
         stoneDots(p) +
-      "</" + B + "></button>"
+      "</div></button>"
     );
   }
 
@@ -298,7 +288,7 @@
 
   function selectCat(id) {
     activeCat = id;
-    $$("." + T.filtro.split(" ")[0]).forEach((b) => b.setAttribute("aria-selected", String(b.dataset.cat === id)));
+    $$(".cat").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.cat === id)));
     renderGrid();
   }
 
@@ -391,7 +381,7 @@
     el.textContent = n;
     el.setAttribute("data-empty", String(n === 0));
 
-    if (TEMA === "oscura" && n > lastCount && !quieto) {
+    if (n > lastCount && !quieto) {
       const btn = $("#openCart");
       btn.classList.remove("bump");
       void btn.offsetWidth;            /* reinicia la animación */
@@ -861,7 +851,7 @@
      Cada foto se mueve un poco más lento que la página. El recorte lo
      absorbe el alto extra que las imágenes tienen en el CSS. */
 
-  const capas = TEMA === "oscura" && !quieto ? $$("[data-par]") : [];
+  const capas = !quieto ? $$("[data-par]") : [];
   let tic = false;
 
   function moverCapas() {
@@ -892,7 +882,7 @@
   function alScrollear() {
     const y = window.pageYOffset || document.documentElement.scrollTop;
 
-    if (header) header.classList.toggle("is-stuck", y > (TEMA === "oscura" ? 12 : 8));
+    if (header) header.classList.toggle("is-stuck", y > 12);
 
     if (barra) {
       const alto = document.documentElement.scrollHeight - window.innerHeight;

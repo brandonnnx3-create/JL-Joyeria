@@ -17,16 +17,18 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="css/clara.css">
 <link rel="stylesheet" href="css/comparador.css">
 </head>
 <body>
 
-<div class="topbar">
-  <span>Envíos a todo el país</span><i>—</i><span>Plata 925 con sello</span><i>—</i><span>Atención personalizada</span>
-</div>
+<!-- Textura del fondo: grano finísimo y viñeta en los bordes.
+     Son decorativos y no interceptan clics. -->
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
+<!-- ============ HEADER ============ -->
 <header class="header" id="header">
   <div class="wrap header__bar">
     <a class="brand" href="#inicio" aria-label="Romero Joyería, ir al inicio">
@@ -37,174 +39,202 @@
       </span>
     </a>
 
-    <nav class="nav" aria-label="Principal">
-      <a href="#catalogo" data-cat="sets">Sets</a>
-      <a href="#catalogo" data-cat="anillos">Anillos</a>
-      <a href="#catalogo" data-cat="cadenas">Cadenas</a>
-      <a href="#catalogo" data-cat="todos">Colección</a>
-      <a href="#taller">La casa</a>
+    <nav class="header__nav" aria-label="Secciones">
+      <a href="#coleccion" data-cat="sets">Sets</a>
+      <a href="#coleccion" data-cat="anillos">Anillos</a>
+      <a href="#coleccion" data-cat="cadenas">Cadenas</a>
+      <a href="#catalogo" data-goto="catalogo">Catálogo</a>
     </nav>
 
-    <div class="header__end">
-      <button class="icon-btn menu-btn" id="openMenu" aria-label="Ver las categorías">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
+    <div class="header__actions">
       <button class="icon-btn cart-btn" id="openCart" aria-label="Abrir el carrito">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
         <span class="cart-btn__count" id="cartCount" data-empty="true">0</span>
       </button>
     </div>
   </div>
+  <div class="header__progress" id="progress" aria-hidden="true"></div>
 </header>
 
-<!-- ==================== HERO ==================== -->
-<section class="hero wrap" id="inicio">
-  <div class="hero__inner">
-    <div class="hero__copy">
-      <p class="label reveal" style="--d:0">Colección en plata 925</p>
-      <h1 class="hero__title reveal" style="--d:1">Calidad y elegancia<br><em>en cada detalle</em></h1>
-      <p class="lede reveal" style="--d:2">
-        Piezas de plata de ley con terminación dorada, pensadas para
-        usarse todos los días. Cada una se revisa a mano antes de salir.
-      </p>
+<!-- ============ HERO ============ -->
+<section class="hero" id="inicio">
+  <div class="hero__glow" aria-hidden="true"></div>
 
-      <div class="hero__cta reveal" style="--d:3">
-        <button class="btn" data-cat="todos"><span>Ver la colección</span></button>
-        <button class="link" data-cat="sets">
+  <div class="wrap hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow hero__el" style="--d:0">Nueva colección</p>
+      <h1 class="hero__title hero__el" style="--d:1">
+        Calidad y elegancia<br><em>en cada detalle</em>
+      </h1>
+      <p class="hero__lead hero__el" style="--d:2">
+        Anillos, dijes, cadenas y sets trabajados en plata 925 con terminación
+        dorada. Cada pieza se revisa una por una antes de salir del taller.
+      </p>
+      <div class="hero__cta hero__el" style="--d:3">
+        <button class="btn btn--arrow" data-goto="catalogo">
+          Descubrir la colección
+          <svg class="arrow" width="17" height="10" viewBox="0 0 17 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4"/></svg>
+        </button>
+        <button class="btn btn--ghost btn--arrow" data-cat="sets">
           Sets en estuche
-          <svg width="16" height="9" viewBox="0 0 16 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h14M10.5 1l3.5 3.5L10.5 8"/></svg>
+          <svg class="arrow" width="17" height="10" viewBox="0 0 17 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4"/></svg>
         </button>
       </div>
-
-      <dl class="hero__meta reveal" style="--d:4">
-        <div><dt>925</dt><dd>Plata de ley</dd></div>
-        <div><dt>27</dt><dd>Piezas</dd></div>
-        <div><dt>48h</dt><dd>Despacho</dd></div>
-      </dl>
     </div>
 
-    <div class="hero__art reveal" style="--d:2">
-      <div class="shot hero__shot">
-        <img src="img/productos/set-05.jpg" alt="Set de cadena, dije, aros y anillo en plata 925 con piedra verde" width="760" height="1351" fetchpriority="high">
+    <div class="hero__art hero__el" style="--d:2" aria-hidden="true">
+      <div class="hero__frame">
+        <div class="hero__shot" data-par="0.10">
+          <img src="img/productos/set-05.jpg" alt="" width="760" height="1351" fetchpriority="high">
+        </div>
+      </div>
+      <div class="hero__chip">
+        <span class="hero__chip-n">925</span>
+        <span class="hero__chip-t">Plata<br>de ley</span>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ==================== CATEGORÍAS ==================== -->
-<section class="sec wrap" id="categorias">
-  <div class="sec__head reveal">
-    <div>
-      <p class="label">Por categoría</p>
-      <h2 class="t-sec" style="margin-top:var(--s2)">Dónde empezar</h2>
-    </div>
-    <button class="link" data-cat="todos">
-      Ver todo
-      <svg width="16" height="9" viewBox="0 0 16 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h14M10.5 1l3.5 3.5L10.5 8"/></svg>
-    </button>
-  </div>
-
-  <div class="cats">
-    <button class="cat-card reveal" style="--d:0" data-cat="sets">
-      <span class="shot cat-card__shot"><img src="img/productos/set-01.jpg" alt="Set completo en su estuche" width="760" height="1351" loading="lazy"></span>
-      <span class="cat-card__body"><span class="h3">Sets</span><span class="cat-card__n">10 piezas</span></span>
-    </button>
-    <button class="cat-card reveal" style="--d:1" data-cat="anillos">
-      <span class="shot cat-card__shot"><img src="img/productos/anillo-06.jpg" alt="Anillos de marco cuadrado con piedras de color" width="760" height="1351" loading="lazy"></span>
-      <span class="cat-card__body"><span class="h3">Anillos</span><span class="cat-card__n">10 piezas</span></span>
-    </button>
-    <button class="cat-card reveal" style="--d:2" data-cat="cadenas">
-      <span class="shot cat-card__shot"><img src="img/productos/cadena-02.jpg" alt="Cadenas de plata trenzadas" width="760" height="1351" loading="lazy"></span>
-      <span class="cat-card__body"><span class="h3">Cadenas</span><span class="cat-card__n">3 piezas</span></span>
-    </button>
+  <div class="hero__scroll" aria-hidden="true">
+    <span>Seguí bajando</span>
+    <i></i>
   </div>
 </section>
 
-<!-- ==================== PIEZA DESTACADA ==================== -->
-<section class="dark sec">
-  <div class="wrap feature">
-    <div class="shot feature__shot reveal">
-      <img src="img/productos/set-10.jpg" alt="Set de dije rectangular y aros en azul" width="760" height="1351" loading="lazy">
+<!-- ============ CINTA ============ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="ticker"></div>
+</div>
+
+<!-- ============ SECCIONES EDITORIALES ============ -->
+<section class="stories" id="coleccion">
+
+  <article class="story reveal">
+    <div class="story__media" data-par="0.07">
+      <img src="img/productos/set-01.jpg" alt="Set de cadena, dije, aros y anillo en su estuche" width="760" height="1351" loading="lazy">
+      <span class="story__n">01</span>
     </div>
-    <div class="reveal" style="--d:1">
-      <p class="label">La pieza de la temporada</p>
-      <h2 class="feature__title t-sec">El regalo que <em>no se explica</em></h2>
-      <p class="lede">
-        Cadena, dije y aros trabajados con la misma piedra, en su estuche.
-        No hay que combinar nada ni acertarle al gusto.
+    <div class="story__copy">
+      <p class="eyebrow">Las cuatro piezas a juego</p>
+      <h2 class="story__title">El regalo que <em>no se explica</em></h2>
+      <p class="story__text">
+        Cadena, dije, aros y anillo trabajados con la misma piedra, en su estuche.
+        No hay que combinar nada ni acertarle al gusto: llega listo para entregar.
       </p>
-      <ul class="feature__list">
-        <li><span>Material</span><span>Plata 925 con terminación dorada</span></li>
-        <li><span>Incluye</span><span>Cadena con dije y aros</span></li>
-        <li><span>Presentación</span><span>Estuche de la casa</span></li>
+      <ul class="story__facts">
+        <li><span>10</span> sets disponibles</li>
+        <li><span>9</span> colores de piedra</li>
       </ul>
-      <button class="btn btn--light" data-product="set-10"><span>Ver la pieza</span></button>
+      <button class="btn btn--ghost btn--arrow" data-cat="sets">
+        Ver los sets
+        <svg class="arrow" width="17" height="10" viewBox="0 0 17 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4"/></svg>
+      </button>
     </div>
-  </div>
+  </article>
+
+  <article class="story story--flip reveal">
+    <div class="story__media" data-par="0.07">
+      <img src="img/productos/cadena-02.jpg" alt="Cadenas de plata trenzadas de distintos largos" width="760" height="1351" loading="lazy">
+      <span class="story__n">02</span>
+    </div>
+    <div class="story__copy">
+      <p class="eyebrow">El clásico que combina con todo</p>
+      <h2 class="story__title">Una cadena para <em>todos los días</em></h2>
+      <p class="story__text">
+        Tejido trenzado en plata 925, en cuatro largos de 40 a 55 cm. Se usan
+        de a una o superpuestas a distinta altura, con el dije que quieras.
+      </p>
+      <ul class="story__facts">
+        <li><span>4</span> largos, de 40 a 55 cm</li>
+        <li><span>925</span> plata de ley</li>
+      </ul>
+      <button class="btn btn--ghost btn--arrow" data-cat="cadenas">
+        Ver las cadenas
+        <svg class="arrow" width="17" height="10" viewBox="0 0 17 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <article class="story reveal">
+    <div class="story__media" data-par="0.07">
+      <img src="img/productos/anillo-06.jpg" alt="Anillos de marco cuadrado con piedras de distintos colores" width="760" height="1351" loading="lazy">
+      <span class="story__n">03</span>
+    </div>
+    <div class="story__copy">
+      <p class="eyebrow">Elegís vos el color</p>
+      <h2 class="story__title">Un anillo, <em>toda la carta</em></h2>
+      <p class="story__text">
+        El mismo marco, siete piedras. Del cristal transparente al negro
+        profundo, pasando por el turquesa, el granate y el verde esmeralda.
+      </p>
+      <ul class="story__swatch" aria-label="Colores disponibles">
+        <li style="--c:#15161A" title="Negro"></li>
+        <li style="--c:#8E1D2B" title="Granate"></li>
+        <li style="--c:#1F7A4C" title="Verde"></li>
+        <li style="--c:#2BA6B5" title="Turquesa"></li>
+        <li style="--c:#7A4BA8" title="Violeta"></li>
+        <li style="--c:#E6E9EC" title="Cristal"></li>
+        <li style="--c:#C98A2E" title="Ámbar"></li>
+      </ul>
+      <button class="btn btn--ghost btn--arrow" data-cat="anillos">
+        Ver los anillos
+        <svg class="arrow" width="17" height="10" viewBox="0 0 17 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4"/></svg>
+      </button>
+    </div>
+  </article>
+
 </section>
 
-<!-- ==================== CATÁLOGO ==================== -->
-<main class="sec wrap" id="catalogo">
-  <div class="sec__head reveal">
-    <div>
-      <p class="label" id="catEyebrow">La colección</p>
-      <h2 class="t-sec" id="catTitle" style="margin-top:var(--s2)">Todo</h2>
-      <p class="lede" id="catDesc">La colección completa</p>
-    </div>
+<!-- ============ FRASE ============ -->
+<div class="strip reveal">
+  <div class="wrap">
+    <span class="strip__rule" aria-hidden="true"></span>
+    <p class="strip__quote">“El lujo está en los detalles.”</p>
+    <span class="strip__rule" aria-hidden="true"></span>
   </div>
+</div>
 
-  <div class="filters" id="catbar" role="tablist"></div>
+<!-- ============ CATEGORÍAS ============ -->
+<nav class="catbar" id="catbarWrap" aria-label="Categorías">
+  <div class="wrap">
+    <div class="catbar__scroll" id="catbar" role="tablist"></div>
+  </div>
+</nav>
+
+<!-- ============ CATÁLOGO ============ -->
+<main class="wrap section" id="catalogo">
+  <div class="section__head reveal">
+    <p class="eyebrow" id="catEyebrow">La colección</p>
+    <h2 class="section__title" id="catTitle">Todo</h2>
+    <p class="section__desc" id="catDesc">La colección completa</p>
+  </div>
   <div class="grid" id="grid"></div>
 </main>
 
-<!-- ==================== LA CASA ==================== -->
-<section class="sec--tight sec wrap" id="taller">
-  <div class="story-grid">
-    <div class="shot story-shot reveal">
-      <img src="img/productos/aro-01.jpg" alt="Bandeja con aros de plata 925 en el taller" width="760" height="1351" loading="lazy">
-    </div>
-    <div class="story-copy reveal" style="--d:1">
-      <p class="label">La casa</p>
-      <h2 class="t-sec">Pocas piezas, <em>bien hechas</em></h2>
-      <p class="lede">
-        Trabajamos con plata 925 sellada y circonias engarzadas una por una.
-        No hacemos series largas: preferimos un catálogo corto donde cada
-        modelo esté resuelto.
-      </p>
-      <p class="lede">
-        Antes de que una pieza salga se revisa el engarce, el cierre y el
-        brillo. Si algo no pasa ese control, no se vende.
-      </p>
-      <p class="signature">“El lujo está en los detalles.”</p>
-    </div>
+<!-- ============ GARANTÍAS ============ -->
+<section class="wrap promises reveal">
+  <div class="promise">
+    <span class="promise__n">01</span>
+    <h3>Plata 925 de ley</h3>
+    <p>Cada pieza lleva el sello. Nada de aleaciones sin identificar.</p>
+  </div>
+  <div class="promise">
+    <span class="promise__n">02</span>
+    <h3>Revisada una por una</h3>
+    <p>Se controla el engarce y el cierre antes de salir del taller.</p>
+  </div>
+  <div class="promise">
+    <span class="promise__n">03</span>
+    <h3>Envíos a todo el país</h3>
+    <p>Sin cargo a partir de cierto monto. Retiro en persona si preferís.</p>
   </div>
 </section>
 
-<!-- ==================== CONFIANZA ==================== -->
-<section class="sec--tight wrap">
-  <div class="assurances reveal">
-    <div class="assurance">
-      <h3 class="assurance__t">Envíos a todo el país</h3>
-      <p>Despacho dentro de las 48 h. Sin cargo a partir de cierto monto, o retiro en persona.</p>
-    </div>
-    <div class="assurance">
-      <h3 class="assurance__t">Plata 925 con sello</h3>
-      <p>Cada pieza lleva su marca de ley. Nada de aleaciones sin identificar.</p>
-    </div>
-    <div class="assurance">
-      <h3 class="assurance__t">Cambios sin vueltas</h3>
-      <p>Si el talle no va o la pieza no era la esperada, se cambia. Escribinos y lo resolvemos.</p>
-    </div>
-    <div class="assurance">
-      <h3 class="assurance__t">Te atendemos nosotros</h3>
-      <p>El pedido llega a nuestro WhatsApp y lo responde una persona, no un formulario.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== FOOTER ==================== -->
+<!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer__grid">
@@ -216,21 +246,12 @@
             <span class="brand__tag">Plata 925</span>
           </span>
         </span>
-        <p class="footer__quote">“Calidad y elegancia en cada detalle.”</p>
+        <p class="footer__quote">“El lujo está en los detalles.”</p>
       </div>
 
       <div>
         <h3 class="footer__h">Colección</h3>
         <ul class="footer__list" id="footerCats"></ul>
-      </div>
-
-      <div>
-        <h3 class="footer__h">Comprar</h3>
-        <ul class="footer__list">
-          <li><a href="#catalogo" data-cat="todos">Ver la colección</a></li>
-          <li><a href="#taller">La casa</a></li>
-          <li><a href="#" data-opencart="1">Mi carrito</a></li>
-        </ul>
       </div>
 
       <div>
@@ -241,10 +262,14 @@
 
     <div class="footer__bottom">
       <span id="footerCopy">© Romero Joyería</span>
-      <span>Buenos Aires, Argentina</span>
+      <span>Calidad y elegancia en cada detalle</span>
     </div>
   </div>
 </footer>
+
+<button class="totop" id="toTop" aria-label="Volver arriba" hidden>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <!-- ============================================================
      Barra para comparar las dos propuestas durante la presentación.

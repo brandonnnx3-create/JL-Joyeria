@@ -1,13 +1,22 @@
 # Romero Joyería — sitio web
 
-**Hay dos propuestas de diseño listas para presentar.** Las dos son el mismo
-sitio: mismo catálogo, mismo carrito, mismo checkout por WhatsApp. Sólo cambia
-la piel.
+**Hay dos propuestas de diseño listas para presentar.** Son exactamente la
+misma página —mismo layout, misma tipografía, mismas animaciones, mismo
+catálogo, mismo carrito, mismo checkout por WhatsApp— con una sola diferencia:
+la paleta de colores.
 
-| | Archivo | Dirección visual |
+| | Archivo | Paleta |
 |---|---|---|
-| **Propuesta A** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. Fotos en arco, secciones editoriales numeradas, cinta deslizante y desplazamiento suave de las imágenes. |
-| **Propuesta B** | `clara.html` | Marfil, carbón y champagne como acento. La dirección que usan las casas de joyería internacionales: base clara y oscuro sólo para momentos editoriales. Más silencio, menos movimiento. |
+| **Propuesta A** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. |
+| **Propuesta B** | `clara.html` | Marfil, carbón y champagne como acento, sobre exactamente la misma estructura. |
+
+Las dos tienen el hero en arco, las tres secciones editoriales numeradas
+(01/02/03), la cinta deslizante, el desplazamiento suave de las fotos y el
+bloque de garantías. Si cambiás algo de layout o de comportamiento, hacelo en
+`js/app.js` (es un solo archivo, lo usan las dos) y replicá el ajuste de color
+correspondiente en la hoja que no estés mirando —`css/oscura.css` y
+`css/clara.css` comparten exactamente los mismos selectores, solo cambian los
+valores de los tokens de color en el bloque `:root`—.
 
 En el sitio publicado son:
 
@@ -31,9 +40,8 @@ Son tres pasos, todos manuales y reversibles con `git`:
    `<link rel="stylesheet" href="css/comparador.css">` y el bloque
    `<nav class="vs">` del archivo que quede.
 
-En `js/app.js` no hay que tocar nada: la versión activa se define con el
-atributo `data-tema` de la etiqueta `<html>` (`oscura` o `clara`), y el resto
-—catálogo, carrito y checkout— es común a las dos.
+`js/app.js` no distingue entre versiones —no hay ningún `if` de tema—, así que
+no hay nada que tocar ahí al elegir una.
 
 ---
 
@@ -100,22 +108,28 @@ reemplazalo y queda mejor en todos lados.
 
 ## Las secciones de la portada
 
-El orden responde a cómo compra la gente: primero qué es, después dónde
-empezar, después la prueba, después el catálogo, y recién al final quiénes
-somos y por qué confiar.
+`index.html` y `clara.html` tienen el mismo cuerpo, en el mismo orden. Editar
+una sección implica editar las dos (son archivos separados, no un include), y
+conviene mantenerlas iguales salvo el color.
 
-1. **Hero** — qué vendemos, en una frase, con la pieza a la vista.
-2. **Dónde empezar** — tres categorías como puerta de entrada.
-3. **La pieza de la temporada** — sección oscura, una sola pieza con sus datos.
-4. **Catálogo** — la galería completa con filtros.
-5. **La casa** — el relato de marca, breve.
-6. **Confianza** — envíos, sello, cambios y atención, sin íconos genéricos.
+1. **Hero** — qué vendemos, en una frase, con la pieza a la vista en un marco
+   en arco.
+2. **Cinta deslizante** — la frase de marca, en bucle.
+3. **Tres secciones editoriales numeradas (01/02/03)** — sets, cadenas y
+   anillos, alternando foto y texto. La del medio (02) invierte el arco e
+   invade el ancho completo con el segundo color de fondo (`--navy` en la
+   oscura, el champagne-arena en la clara).
+4. **Frase de marca** — "El lujo está en los detalles.", centrada.
+5. **Catálogo** — la galería completa con filtros por categoría.
+6. **Garantías** — tres puntos de confianza, sin iconografía.
+7. **Footer** — marca, colección y contacto.
 
-Todo está escrito a mano en `index.html`. Las fotos de las tarjetas de
-categoría y de la pieza destacada se cambian editando su `src`.
+Todo está escrito a mano en cada `.html`. Las fotos de las secciones
+editoriales se cambian editando el `src` de su `<img>`.
 
-**Los números de las categorías ("10 piezas") están escritos a mano.** Si
-agregás productos, actualizalos.
+**Los números de las secciones editoriales ("10 sets disponibles", "9 colores
+de piedra") están escritos a mano.** Si agregás o sacás productos, actualizalos
+en las dos páginas.
 
 ---
 
@@ -394,39 +408,58 @@ img/productos/          Las 27 fotos
 `js/products.js`, cambia en las dos propuestas. Si aparece un error en el
 carrito, se arregla una sola vez.
 
----|---|
-| `--ivory` `#F6F3EE` | Fondo de la página |
-| `--ivory-2` `--ivory-3` | Superficies y fondo de las fotos |
-| `--sand` `--sand-2` | Reglas y bordes |
-| `--carbon` `#15141A` | Texto y secciones editoriales oscuras |
-| `--graphite` | Texto secundario |
-| `--champagne` `#86683C` | Acento sobre claro (pasa contraste AA) |
-| `--champagne-lt` | Acento sobre oscuro |
+### El sistema de color
+
+`css/oscura.css` y `css/clara.css` tienen **exactamente los mismos selectores**.
+Lo único que cambia es el valor de los tokens de color en el bloque `:root` de
+cada una. Si necesitás tocar un color, siempre es ahí arriba, nunca abajo en
+una regla suelta.
+
+| Token | Oscura | Clara | Para qué |
+|---|---|---|---|
+| `--ink` / `--ink-2` / `--ink-3` | negros | marfiles | Fondo de la página y superficies |
+| `--line` / `--line-2` | grises fríos | arenas | Bordes y reglas |
+| `--navy` / `--navy-2` / `--navy-3` | azul de medianoche | champagne-arena | La superficie que alterna con `--ink` para que el fondo no sea plano |
+| `--gold` / `--gold-lt` / `--gold-dim` | dorado vívido | bronce profundo | Acento: precios activos, filtros seleccionados, itálicas |
+| `--bone` | marfil (texto claro) | carbón (texto oscuro) | Texto principal |
+| `--muted` / `--muted-2` | grises cálidos | grises cálidos más oscuros | Texto secundario y terciario |
+| `--on-photo` | igual en las dos | igual en las dos | El numeral de las secciones editoriales (01/02/03), siempre claro con sombra oscura porque se apoya sobre las mismas fotos en ambas versiones |
+
+**Los dorados de la versión clara no son los mismos números que los de la
+oscura.** El dorado vívido de la oscura (`#C49A46`) pierde casi todo el
+contraste sobre un fondo casi blanco: por eso en clara es más profundo
+(`#7A5D30`), verificado contra AA tanto sobre `--ink` como sobre `--navy`.
 
 **Los precios van en el color del texto, no en dorado.** El oro como color de
 precio es justamente lo que abarata la percepción: lo usan las tiendas que
 quieren parecer caras, no las que lo son.
 
+Un puñado de elementos que se apoyan directamente sobre las fotos (la etiqueta
+"Selección"/"Agotado", el aviso "Ver pieza" al pasar el mouse) invierten la
+polaridad del chip en lugar de solo cambiar un color: en la oscura son un chip
+oscuro con texto dorado claro, en la clara un chip claro con texto dorado
+oscuro. Es la misma pieza de UI, en la misma posición, con el mismo
+comportamiento; lo que cambia es qué combinación de token se usa para que siga
+leyéndose bien sobre las mismas fotografías.
+
 ### Tipografía
 
 Dos familias, ni una más. **Bodoni Moda** para la voz de la marca (títulos,
 nombres de pieza, cifras) y **Jost** para todo lo que se opera (navegación,
-botones, formularios, precios).
+botones, formularios, precios). Es igual en las dos propuestas: la tipografía
+no es un color, no había nada que tocar ahí.
 
-El tracking se abre en los tamaños chicos (`.24em` en las volantas) y se cierra
-en los grandes (`-.022em` en el H1). Es lo que separa una tipografía puesta de
-una compuesta.
-
-### Espaciado
-
-Escala de base 8 (`--s1` a `--s8`). Las secciones respiran entre 96 y 128 px en
-escritorio. El aire es la mitad del trabajo: una pieza rodeada de blanco se lee
-como cara.
+El tracking se abre en los tamaños chicos (`.3em` en las volantas) y se cierra
+en los grandes en los títulos principales. Es lo que separa una tipografía
+puesta de una compuesta.
 
 ### Formas
 
-Radios de 2 a 4 px. **Deliberadamente discretos**: las esquinas muy redondeadas
-leen como aplicación, no como joyería.
+Cinco radios según el papel que cumple cada forma (`--r-xs` a `--r-pill`, de
+6 a 26 px, más el círculo completo para botones y fichas). El hero remata en
+arco (`border-radius: 999px 999px var(--r-lg) var(--r-lg)`), y la segunda
+sección editorial invierte ese arco para que las tres no se lean iguales.
+Ninguna de estas formas cambia entre propuestas: son estructura, no color.
 
 ---
 
@@ -478,21 +511,33 @@ que es donde está la pieza en casi todas las tomas.
 
 ## Animaciones
 
-Una sola idea, repetida: los elementos aparecen con un desplazamiento corto y un
-fundido. No hay parallax, ni cintas deslizantes, ni entradas desde los costados,
-ni nada que siga moviéndose después de llegar a su lugar.
+Las dos propuestas comparten el mismo movimiento, definido una sola vez en
+`js/app.js`:
 
-Las microinteracciones que quedan son tres, y cada una tiene un motivo:
-
+- **Apariciones al scrollear**: los bloques entran con un desplazamiento corto
+  y un fundido, una sola vez, la primera vez que entran en pantalla.
+- **Parallax en las fotos**: las imágenes con `data-par` se desplazan un poco
+  más lento que la página, para dar profundidad sin marear.
+- **Cinta deslizante**: la frase de marca se desliza sin corte en un bucle
+  infinito entre el hero y las secciones editoriales.
 - **Botones**: el relleno se retira hacia abajo en lugar de cambiar de color.
-- **Fotos**: zoom de 4% en 1,1 segundos. Apenas perceptible, es lo que lo hace caro.
-- **Tarjetas**: la acción "Ver pieza" aparece al pasar, y nunca ocupa lugar en reposo.
+- **Fotos del catálogo**: zoom de 4% en 1,1 segundos al pasar el mouse.
+- **Tarjetas**: la acción "Ver pieza" aparece al pasar, y nunca ocupa lugar en
+  reposo.
+- **Header y barra de progreso**: el header se opaca al bajar, y una línea
+  dorada arriba marca cuánto falta para llegar al final de la página.
 
 Dos cosas a tener en cuenta si tocás el código:
 
 - **Nada queda invisible sin JavaScript.** La clase `js` que habilita los
   estados de entrada la agrega el propio script. Si falla, el contenido se ve.
-- **Se respeta "reducir movimiento"** del sistema: todo queda quieto y legible.
+- **Se respeta "reducir movimiento"** del sistema: todo queda quieto y legible,
+  sin parallax ni cinta, en las dos propuestas por igual.
+
+Como `js/app.js` es un solo archivo para las dos páginas, cualquier cambio acá
+—agregar una animación, sacar el parallax, lo que sea— aplica a las dos
+automáticamente. No hay una rama de código por versión: se eliminó a propósito
+para que no puedan volver a desincronizarse.
 
 ---
 
