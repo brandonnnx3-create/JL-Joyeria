@@ -25,9 +25,33 @@
     "Ámbar": "#C98A2E", "Dorado": "#C9A227",
   };
 
-  /* Fotos disponibles: las que ya usa el catálogo. El panel no sube
-     archivos, así que la lista sale de lo que hay publicado. */
-  const FOTOS = Array.from(new Set(PRODUCTOS.map((p) => p.img))).sort();
+  /* Fotos disponibles. Arranca con las que usa el catálogo y, si hay
+     conexión con GitHub, se completa con todo lo que haya en la
+     carpeta, incluidas las que se suban desde acá. */
+  let FOTOS = Array.from(new Set(PRODUCTOS.map((p) => p.img))).sort();
+
+  function sumarFoto(ruta) {
+    if (FOTOS.indexOf(ruta) === -1) { FOTOS.push(ruta); FOTOS.sort(); }
+  }
+
+  /* Una foto recién subida tarda cerca de un minuto en quedar
+     publicada. Hasta entonces la ruta del sitio da 404, así que las
+     vistas previas usan el archivo que sigue en memoria. */
+  const VISTAS = {};
+
+  function recordarVista(ruta, blob) {
+    try { VISTAS[ruta] = URL.createObjectURL(blob); } catch (e) {}
+  }
+
+  const fotoSrc = (ruta) => VISTAS[ruta] || ruta;
+
+  async function refrescarFotos() {
+    if (!GIT.conectado()) return;
+    const lista = await GIT.listarFotos();
+    if (lista && lista.length) {
+      lista.forEach(sumarFoto);
+    }
+  }
 
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -212,7 +236,7 @@
       cuerpo.innerHTML = lista.map((p) => {
         const st = estadoStock(p);
         return '<tr data-id="' + esc(p.id) + '">' +
-          '<td><img class="mini" src="' + esc(p.img) + '" alt=""></td>' +
+          '<td><img class="mini" src="' + esc(fotoSrc(p.img)) + '" alt=""></td>' +
           '<td class="nom">' + esc(p.nombre) + "<small>" + esc(p.id) + "</small></td>" +
           "<td>" + esc(nombreCat(p.categoria)) + "</td>" +
           '<td class="c-num"><input class="in in--num" type="number" min="0" step="100" ' +
@@ -308,10 +332,22 @@
     abrir(
       cabecera(nuevo ? "Nueva pieza" : base.nombre) +
       '<div class="dlg__cuerpo"><div class="dlg-cols">' +
-        '<div><div class="preview" id="prev"><img src="' + esc(base.img) + '" alt=""></div>' +
+        '<div><div class="preview" id="prev"><img src="' + esc(fotoSrc(base.img)) + '" alt=""></div>' +
           '<label class="campo" style="margin-top:14px"><span>Foto</span>' +
-          '<select class="in" id="fImg">' + opsFoto + "</select>" +
-          "<small>Para usar una foto nueva, subila antes a <code>img/productos/</code>.</small></label></div>" +
+          '<select class="in" id="fImg">' + opsFoto + "</select></label>" +
+
+          (GIT.conectado()
+            ? '<button type="button" class="soltar" id="zonaFoto">' +
+                "<strong>Subir una foto</strong>" +
+                "Arrastrala acá o tocá para elegirla" +
+                "<small>Se achica y se sube sola. Mejor vertical.</small>" +
+              "</button>" +
+              '<input type="file" id="archivoFoto" accept="image/*" hidden>' +
+              '<div id="estadoFoto"></div>'
+            : '<p class="campo" style="margin-top:10px"><small>' +
+              "Para usar una foto nueva hay que subirla a <code>img/productos/</code>. " +
+              "Conectando el panel con GitHub se puede subir desde acá.</small></p>") +
+        "</div>" +
 
         "<div>" +
           '<label class="campo"><span>Nombre</span>' +
@@ -360,8 +396,68 @@
 
       (dlg) => {
         $("#fImg", dlg).addEventListener("change", (e) => {
-          $("#prev img", dlg).src = e.target.value;
+          $("#prev img", dlg).src = fotoSrc(e.target.value);
         });
+
+        /* ---------- Subir una foto sin salir del panel ---------- */
+        const zona = $("#zonaFoto", dlg);
+        if (zona) {
+          const archivo = $("#archivoFoto", dlg);
+          const estado = $("#estadoFoto", dlg);
+
+          zona.addEventListener("click", () => archivo.click());
+          archivo.addEventListener("change", () => {
+            if (archivo.files && archivo.files[0]) subirFoto(archivo.files[0]);
+          });
+
+          ["dragenter", "dragover"].forEach((ev) =>
+            zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add("encima"); }));
+          ["dragleave", "drop"].forEach((ev) =>
+            zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.remove("encima"); }));
+          zona.addEventListener("drop", (e) => {
+            const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (f) subirFoto(f);
+          });
+
+          async function subirFoto(file) {
+            zona.hidden = true;
+            estado.innerHTML = '<div class="subiendo"><span class="giro"></span><span id="foTxt">Preparando la foto…</span></div>';
+            const txt = $("#foTxt", estado);
+
+            try {
+              const lista = await GIT.prepararFoto(file);
+              const kb = Math.round(lista.blob.size / 1024);
+              txt.textContent = "Subiendo… " + lista.ancho + "×" + lista.alto + ", " + kb + " KB";
+
+              const ruta = "img/productos/" + GIT.nombreDeFoto(file.name);
+              await GIT.escribirBlob(ruta, lista.blob, "Subir foto desde el panel: " + ruta);
+
+              sumarFoto(ruta);
+              recordarVista(ruta, lista.blob);
+
+              /* La lista se rearma para que aparezca la recién subida. */
+              const sel = $("#fImg", dlg);
+              sel.innerHTML = FOTOS.map((f) =>
+                '<option value="' + esc(f) + '">' + esc(f.replace("img/productos/", "")) + "</option>").join("");
+              sel.value = ruta;
+              $("#prev img", dlg).src = fotoSrc(ruta);
+
+              const apaisada = lista.proporcion > 0.95;
+              estado.innerHTML = '<p class="campo" style="margin:10px 0 0"><small style="color:var(--ok)">' +
+                "Foto subida. Va a aparecer en la tienda cuando publiques los cambios." +
+                (apaisada
+                  ? " Ojo: es apaisada y el sitio está armado con fotos verticales; " +
+                    "en la ficha va a quedar con bandas a los costados."
+                  : "") +
+                "</small></p>";
+              aviso("Foto subida");
+            } catch (e) {
+              estado.innerHTML = '<p class="campo" style="margin:10px 0 0"><small class="mal">' +
+                esc(e.message) + "</small></p>";
+              zona.hidden = false;
+            }
+          }
+        }
 
         /* El identificador se arma con el nombre, sólo al crear. */
         if (nuevo) {
@@ -797,6 +893,269 @@
     e.returnValue = "";
   });
 
+
+  /* ============================================================
+     CONEXIÓN CON GITHUB
+     Con el token cargado, el panel sube las fotos y publica los
+     archivos solo. Sin él, sigue estando la descarga a mano.
+     ============================================================ */
+
+  function pintarConexion() {
+    const banda = $("#conexion");
+    const btnPub = $("#btnPublicar");
+    const btnExp = $("#btnExportar");
+
+    if (GIT.conectado()) {
+      const d = GIT.datos();
+      banda.hidden = true;
+      btnPub.hidden = false;
+      btnExp.classList.add("btn--quiet");
+      btnPub.title = "Publica en " + d.owner + "/" + d.repo;
+    } else {
+      banda.hidden = false;
+      banda.dataset.tono = "";
+      $("#conexionTxt").textContent =
+        "Conectá el panel con GitHub y las fotos y los cambios se publican solos, sin salir de acá.";
+      btnPub.hidden = true;
+    }
+    pintarEstadoGit();
+  }
+
+  function pintarEstadoGit() {
+    const caja = $("#estadoConexion");
+    if (!caja) return;
+
+    if (GIT.conectado()) {
+      const d = GIT.datos();
+      caja.innerHTML =
+        '<div class="estado-git"><span class="luz luz--ok"></span><div class="estado-git__p">' +
+          '<div class="estado-git__t">Conectado</div>' +
+          '<p class="estado-git__d">Publicando en <code>' + esc(d.owner + "/" + d.repo) +
+            "</code>, rama <code>" + esc(d.rama) + "</code>.<br>" +
+            "El botón <strong>Publicar cambios</strong> sube todo y la tienda se " +
+            "actualiza cerca de un minuto después.</p>" +
+          '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">' +
+            '<button class="btn btn--quiet btn--sm" id="gitCambiar">Cambiar repositorio</button>' +
+            '<button class="btn btn--danger btn--sm" id="gitSalir">Desconectar</button>' +
+          "</div>" +
+        "</div></div>";
+
+      $("#gitCambiar", caja).addEventListener("click", dialogoConexion);
+      $("#gitSalir", caja).addEventListener("click", () => {
+        confirmar("Desconectar",
+          "Se borra el token de este navegador. Los cambios que tengas sin publicar no se pierden, " +
+          "pero vas a tener que descargar los archivos a mano o volver a conectar.",
+          "Desconectar", () => {
+            GIT.olvidar();
+            pintarConexion();
+            aviso("Panel desconectado");
+          });
+      });
+    } else {
+      caja.innerHTML =
+        '<div class="estado-git"><span class="luz luz--mal"></span><div class="estado-git__p">' +
+          '<div class="estado-git__t">Sin conectar</div>' +
+          '<p class="estado-git__d">Ahora mismo los cambios hay que bajarlos y subirlos a mano. ' +
+            "Conectando el panel con GitHub, las fotos y los archivos se publican desde acá.</p>" +
+          '<div style="margin-top:12px">' +
+            '<button class="btn btn--sm" id="gitConectar2">Conectar con GitHub</button>' +
+          "</div>" +
+        "</div></div>";
+      $("#gitConectar2", caja).addEventListener("click", dialogoConexion);
+    }
+  }
+
+  function dialogoConexion() {
+    const previo = GIT.datos() || GIT.adivinar();
+
+    abrir(
+      cabecera("Conectar con GitHub") +
+      '<div class="dlg__cuerpo">' +
+        '<p class="prosa">Una sola vez. Después, publicar es un botón.</p>' +
+        "<ol class=\"receta\">" +
+          "<li>Entrá a <a href=\"https://github.com/settings/personal-access-tokens/new\" " +
+            "target=\"_blank\" rel=\"noopener\">github.com → tokens</a> " +
+            "(Settings → Developer settings → Fine-grained tokens).</li>" +
+          "<li>En <strong>Repository access</strong> elegí <strong>Only select repositories</strong> " +
+            "y marcá únicamente este repositorio.</li>" +
+          "<li>En <strong>Permissions → Repository permissions</strong>, poné " +
+            "<strong>Contents</strong> en <strong>Read and write</strong>. " +
+            "No hace falta ningún otro permiso.</li>" +
+          "<li>Generá el token y copialo. GitHub lo muestra una sola vez.</li>" +
+        "</ol>" +
+
+        '<div class="par" style="margin-top:18px">' +
+          '<label class="campo"><span>Usuario u organización</span>' +
+          '<input class="in" id="gOwner" type="text" value="' + esc(previo.owner || "") + '" placeholder="tu-usuario"></label>' +
+          '<label class="campo"><span>Repositorio</span>' +
+          '<input class="in" id="gRepo" type="text" value="' + esc(previo.repo || "") + '" placeholder="JL-Joyeria"></label>' +
+        "</div>" +
+
+        '<label class="campo"><span>Token</span>' +
+        '<input class="in token-in" id="gToken" type="password" autocomplete="off" ' +
+          'placeholder="github_pat_..." data-foco>' +
+        "<small>Se guarda solo en este navegador y viaja únicamente a github.com.</small>" +
+        '<span class="mal" id="gErr"></span></label>' +
+
+        '<div class="aviso" style="margin-top:4px;margin-bottom:0">' +
+          "<strong>Sobre el token:</strong> queda guardado en esta computadora. " +
+          "Si es una máquina compartida, mejor usá la descarga a mano. " +
+          "Un token limitado a este repositorio y a Contents no puede tocar nada más de tu cuenta." +
+        "</div>" +
+      "</div>" +
+      '<div class="dlg__pie">' +
+        '<button class="btn btn--quiet" data-cerrar="1">Cancelar</button>' +
+        '<button class="btn" id="gOk">Conectar</button>' +
+      "</div>",
+
+      (dlg) => {
+        $("#gOk", dlg).addEventListener("click", async () => {
+          const owner = $("#gOwner", dlg).value.trim();
+          const repo = $("#gRepo", dlg).value.trim().replace(/\.git$/, "");
+          const token = $("#gToken", dlg).value.trim();
+          const err = $("#gErr", dlg);
+          const btn = $("#gOk", dlg);
+
+          err.textContent = "";
+          if (!owner || !repo) { err.textContent = "Faltan el usuario y el repositorio."; return; }
+          if (!token) { err.textContent = "Pegá el token."; return; }
+
+          btn.disabled = true;
+          btn.textContent = "Probando…";
+          try {
+            const info = await GIT.probar(token, owner, repo);
+            GIT.guardar({ token: token, owner: owner, repo: repo, rama: info.rama });
+            cerrar();
+            pintarConexion();
+            await refrescarFotos();
+            aviso("Conectado a " + info.nombre);
+          } catch (e) {
+            err.textContent = e.message;
+            btn.disabled = false;
+            btn.textContent = "Conectar";
+          }
+        });
+      });
+  }
+
+  $("#btnConectar").addEventListener("click", dialogoConexion);
+
+  /* ============================================================
+     PUBLICAR
+     ============================================================ */
+
+  function pasoHTML(id, txt) {
+    return '<li id="' + id + '" data-est="espera"><span class="progreso__m">·</span><span>' + esc(txt) + "</span></li>";
+  }
+
+  function marcarPaso(dlg, id, estado, txt) {
+    const li = $("#" + id, dlg);
+    if (!li) return;
+    li.dataset.est = estado;
+    li.querySelector(".progreso__m").textContent =
+      estado === "listo" ? "✓" : estado === "mal" ? "!" : "·";
+    if (txt) li.querySelector("span:last-child").textContent = txt;
+  }
+
+  $("#btnPublicar").addEventListener("click", () => {
+    if (!GIT.conectado()) { dialogoConexion(); return; }
+
+    const sinWa = String(D.config.whatsapp || "").replace(/\D/g, "").length < 10;
+    const sinPrecio = D.productos.filter((p) => !p.precio);
+    const problemas = [];
+    if (sinWa) problemas.push("El WhatsApp está vacío o incompleto: el checkout no va a poder enviar pedidos.");
+    if (sinPrecio.length) problemas.push(sinPrecio.length + " pieza" + (sinPrecio.length === 1 ? "" : "s") + " sin precio.");
+
+    const d = GIT.datos();
+
+    abrir(
+      cabecera("Publicar cambios") +
+      '<div class="dlg__cuerpo" id="pubCuerpo">' +
+        (problemas.length
+          ? '<div class="aviso"><strong>Revisá esto antes:</strong><br>' + problemas.map(esc).join("<br>") + "</div>"
+          : "") +
+        '<p class="prosa">Se sube el catálogo y la configuración a <code>' +
+          esc(d.owner + "/" + d.repo) + "</code>. La tienda se actualiza cerca de un minuto después.</p>" +
+        '<ul class="progreso">' +
+          pasoHTML("pasoProd", "Subir el catálogo") +
+          pasoHTML("pasoCfg", "Subir la configuración") +
+          pasoHTML("pasoDeploy", "Esperar a que la tienda se publique") +
+        "</ul>" +
+      "</div>" +
+      '<div class="dlg__pie">' +
+        '<button class="btn btn--quiet" data-cerrar="1" id="pubCerrar">Cancelar</button>' +
+        '<button class="btn" id="pubOk" data-foco>Publicar</button>' +
+      "</div>",
+
+      (dlg) => {
+        $("#pubOk", dlg).addEventListener("click", async () => {
+          const btn = $("#pubOk", dlg);
+          btn.disabled = true;
+          btn.textContent = "Publicando…";
+          $("#pubCerrar", dlg).textContent = "Cerrar";
+
+          const sello = new Date().toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" });
+
+          try {
+            marcarPaso(dlg, "pasoProd", "haciendo");
+            await GIT.escribirTexto("js/products.js", armarProductos(),
+              "Actualizar el catálogo desde el panel (" + sello + ")");
+            marcarPaso(dlg, "pasoProd", "listo");
+
+            marcarPaso(dlg, "pasoCfg", "haciendo");
+            await GIT.escribirTexto("js/config.js", armarConfig(),
+              "Actualizar la configuración desde el panel (" + sello + ")");
+            marcarPaso(dlg, "pasoCfg", "listo");
+          } catch (e) {
+            marcarPaso(dlg, $("#pasoProd", dlg).dataset.est === "listo" ? "pasoCfg" : "pasoProd", "mal", e.message);
+            btn.disabled = false;
+            btn.textContent = "Reintentar";
+            return;
+          }
+
+          /* Los cambios ya están en GitHub: el borrador deja de estar sucio. */
+          sucio = false;
+          try { localStorage.removeItem(CLAVE); } catch (e) {}
+          pintarEstado();
+
+          marcarPaso(dlg, "pasoDeploy", "haciendo", "Esperando a que la tienda se publique…");
+          const listo = await esperarPublicacion(dlg);
+
+          if (listo === true) {
+            marcarPaso(dlg, "pasoDeploy", "listo", "Tienda actualizada");
+            btn.textContent = "Listo";
+            aviso("Cambios publicados");
+          } else if (listo === false) {
+            marcarPaso(dlg, "pasoDeploy", "mal",
+              "La publicación falló. Los archivos se subieron igual: revisá Actions en GitHub.");
+            btn.textContent = "Listo";
+          } else {
+            marcarPaso(dlg, "pasoDeploy", "listo",
+              "Archivos subidos. La tienda termina de publicarse en un minuto.");
+            btn.textContent = "Listo";
+          }
+          btn.disabled = false;
+          btn.onclick = cerrar;
+        });
+      }, true);
+  });
+
+  /* Sigue el estado del workflow hasta que termina o se agota la espera. */
+  async function esperarPublicacion(dlg) {
+    const limite = Date.now() + 150000;   /* dos minutos y medio */
+    await new Promise((r) => setTimeout(r, 4000));
+
+    while (Date.now() < limite) {
+      const r = await GIT.ultimaPublicacion();
+      if (r && r.estado === "completed") return r.resultado === "success";
+      if (r && r.estado === "in_progress") {
+        marcarPaso(dlg, "pasoDeploy", "haciendo", "Publicando la tienda…");
+      }
+      await new Promise((r2) => setTimeout(r2, 5000));
+    }
+    return null;   /* tardó más de la cuenta: no es un error */
+  }
+
   /* ============================================================
      ARRANQUE
      ============================================================ */
@@ -810,4 +1169,6 @@
 
   cargar();
   pintarTodo();
+  pintarConexion();
+  refrescarFotos();
 })();

@@ -480,3 +480,160 @@ textarea.in { width: 100%; resize: vertical; min-height: 78px; line-height: 1.55
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   .capa-fondo { opacity: 1; }
 }
+
+/* ============================================================
+   CONEXIÓN CON GITHUB
+   ============================================================ */
+
+.conexion {
+  background: rgba(210,160,63,.1);
+  border-bottom: 1px solid rgba(210,160,63,.3);
+}
+
+.conexion__in {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-block: 11px;
+  flex-wrap: wrap;
+}
+
+.conexion__txt { font-size: .8125rem; color: var(--txt); flex: 1; min-width: 200px; }
+
+.conexion[data-tono="ok"] {
+  background: rgba(95,167,114,.09);
+  border-bottom-color: rgba(95,167,114,.28);
+}
+
+.conexion[data-tono="mal"] {
+  background: rgba(206,97,87,.1);
+  border-bottom-color: rgba(206,97,87,.32);
+}
+
+/* ---------- Estado dentro de la pestaña ---------- */
+
+.estado-git {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 15px 17px;
+  background: var(--sup-2);
+}
+
+.estado-git__p { flex: 1; min-width: 0; }
+.estado-git__t { font-weight: 500; margin-bottom: 3px; }
+.estado-git__d { color: var(--txt-2); font-size: .8125rem; margin: 0; line-height: 1.55; }
+.estado-git__d code { word-break: break-all; }
+
+.luz { width: 9px; height: 9px; border-radius: 50%; background: var(--txt-3); margin-top: 7px; flex-shrink: 0; }
+.luz--ok { background: var(--ok); }
+.luz--mal { background: var(--warn); }
+
+/* ---------- Instrucciones del token ---------- */
+
+.receta { counter-reset: paso; margin: 0 0 4px; padding: 0; list-style: none; }
+
+.receta li {
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 13px;
+  font-size: .875rem;
+  color: var(--txt-2);
+  line-height: 1.6;
+}
+
+.receta li::before {
+  counter-increment: paso;
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border: 1px solid var(--borde-2);
+  color: var(--txt);
+  font-size: .6875rem;
+  display: grid;
+  place-items: center;
+}
+
+.receta strong { color: var(--txt); font-weight: 500; }
+
+.receta a { color: var(--oro); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Subir foto ---------- */
+
+.soltar {
+  border: 1px dashed var(--borde-2);
+  border-radius: var(--r);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+  display: block;
+  width: 100%;
+  background: none;
+  font-family: inherit;
+  color: var(--txt-2);
+  font-size: .8125rem;
+  margin-top: 10px;
+}
+
+.soltar:hover, .soltar.encima { border-color: var(--oro); color: var(--txt); background: rgba(196,154,70,.06); }
+.soltar strong { display: block; color: var(--txt); font-weight: 500; margin-bottom: 2px; }
+.soltar small { display: block; margin-top: 4px; color: var(--txt-3); font-size: .6875rem; }
+
+.subiendo { display: flex; align-items: center; gap: 10px; font-size: .8125rem; color: var(--txt-2); margin-top: 10px; }
+
+.giro {
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--borde-2);
+  border-top-color: var(--oro);
+  border-radius: 50%;
+  animation: girar .8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ---------- Progreso de la publicación ---------- */
+
+.progreso { display: flex; flex-direction: column; gap: 9px; margin: 4px 0 0; padding: 0; list-style: none; }
+
+.progreso li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: .875rem;
+  color: var(--txt-3);
+}
+
+.progreso li[data-est="haciendo"] { color: var(--txt); }
+.progreso li[data-est="listo"] { color: var(--txt-2); }
+.progreso li[data-est="mal"] { color: var(--err); }
+
+.progreso__m {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--borde-2);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: .625rem;
+}
+
+.progreso li[data-est="listo"] .progreso__m { border-color: var(--ok); color: var(--ok); }
+.progreso li[data-est="mal"] .progreso__m { border-color: var(--err); color: var(--err); }
+.progreso li[data-est="haciendo"] .progreso__m { border-color: var(--oro); }
+
+.token-in { font-family: ui-monospace, Menlo, monospace; font-size: .8125rem; }
+
+@media (max-width: 680px) {
+  .bar__acts .btn { flex: 1 1 100%; }
+  .conexion__in { padding-block: 10px; }
+}

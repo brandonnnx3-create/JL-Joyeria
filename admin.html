@@ -28,7 +28,8 @@
 
   <div class="bar__acts">
     <button class="btn btn--quiet" id="btnDescartar">Descartar cambios</button>
-    <button class="btn" id="btnExportar">Descargar archivos</button>
+    <button class="btn btn--quiet" id="btnExportar">Descargar archivos</button>
+    <button class="btn" id="btnPublicar">Publicar cambios</button>
   </div>
 </header>
 
@@ -38,6 +39,13 @@
   <button class="tab" role="tab" data-panel="tienda" aria-selected="false">Envíos y contacto</button>
   <button class="tab" role="tab" data-panel="publicar" aria-selected="false">Cómo publicar</button>
 </nav>
+
+<div class="conexion" id="conexion" hidden>
+  <div class="wrap conexion__in">
+    <span class="conexion__txt" id="conexionTxt"></span>
+    <button class="btn btn--sm" id="btnConectar">Conectar con GitHub</button>
+  </div>
+</div>
 
 <main class="wrap">
 
@@ -151,40 +159,28 @@
   <!-- ============ PUBLICAR ============ -->
   <section id="p-publicar" hidden>
     <div class="caja caja--ancha">
-      <h2>Cómo pasar los cambios a la tienda</h2>
-      <p class="prosa">
-        Este panel guarda lo que editás en <strong>este navegador</strong>. La tienda publicada no
-        cambia hasta que subas los archivos. Son tres pasos.
-      </p>
+      <h2>Publicar los cambios</h2>
 
-      <ol class="pasos">
-        <li>
-          <h3>Descargá los archivos</h3>
-          <p>El botón <strong>Descargar archivos</strong> de arriba te baja <code>products.js</code>
-          y <code>config.js</code> con todo lo que editaste.</p>
-        </li>
-        <li>
-          <h3>Subilos al repositorio</h3>
-          <p>Entrá a tu repositorio en GitHub, abrí la carpeta <code>js</code>, tocá
-          <strong>Add file → Upload files</strong> y arrastrá los dos archivos. Confirmá con
-          <strong>Commit changes</strong>.</p>
-        </li>
-        <li>
-          <h3>Esperá un minuto</h3>
-          <p>La tienda se publica sola. Si no ves los cambios, recargá con
-          <kbd>Ctrl</kbd>+<kbd>F5</kbd>.</p>
-        </li>
-      </ol>
+      <div id="estadoConexion"></div>
 
-      <h2 style="margin-top:28px">Sobre las fotos</h2>
+      <h2 style="margin-top:28px">Las fotos</h2>
       <p class="prosa">
-        Este panel no sube fotos: elige entre las que ya están en <code>img/productos/</code>.
-        Para agregar una nueva, subila a esa carpeta del repositorio con el mismo método de arriba
-        y después aparece en la lista al editar una pieza.
+        Al editar una pieza podés arrastrar una foto nueva o elegirla del equipo.
+        El panel la achica, la recomprime y la sube sola. No hay que entrar a
+        ningún lado.
       </p>
       <p class="prosa">
-        Conviene que sean verticales y de ancho parecido a las actuales (760 px). Una foto muy
-        pesada hace lenta la tienda en el celular.
+        Conviene que sean <strong>verticales</strong>, como las que ya están: es
+        el formato con el que está armado el sitio. Una foto apaisada va a entrar
+        igual, pero se va a ver con bandas a los costados en la ficha.
+      </p>
+
+      <h2 style="margin-top:28px">Si preferís no conectar GitHub</h2>
+      <p class="prosa">
+        El botón <strong>Descargar archivos</strong> sigue estando. Te baja
+        <code>products.js</code> y <code>config.js</code> para subirlos a mano a
+        la carpeta <code>js</code> del repositorio. Es el camino largo, pero no
+        necesita token.
       </p>
     </div>
   </section>
@@ -193,6 +189,7 @@
 
 <div id="capa"></div>
 
+<script src="js/admin-git.js"></script>
 <script src="js/config.js"></script>
 <script src="js/products.js"></script>
 <script src="js/admin.js"></script>

@@ -226,31 +226,67 @@ Los dos sirven el sitio por HTTPS sin configurar nada.
 Desde ahí se manejan precios, stock, piezas, categorías, costos de envío y datos
 de contacto, sin tocar código.
 
-### Cómo funciona, y qué no hace
+### Dos formas de publicar
 
-El sitio es **estático**: no tiene servidor ni base de datos. El panel no puede
-guardar nada en la nube, así que trabaja en tres tiempos:
+**Conectado con GitHub (recomendado).** El panel sube las fotos y publica los
+cambios solo. El flujo completo es: editás, tocás **Publicar cambios**, y un
+minuto después la tienda está actualizada. Nadie entra a GitHub.
 
-1. **Editás.** Los cambios quedan guardados en *ese* navegador, y sobreviven a
-   cerrar la pestaña. Arriba siempre dice si hay cambios sin descargar.
-2. **Descargás** `products.js` y `config.js` con el botón de arriba a la derecha.
-3. **Los subís** a la carpeta `js` del repositorio. La tienda se publica sola en
-   un minuto.
+**Sin conectar.** El botón **Descargar archivos** baja `products.js` y
+`config.js` para subirlos a mano a la carpeta `js` del repositorio. Es el
+camino largo, pero no necesita token.
 
-Hasta que no hagas el paso 3, **la tienda publicada no cambia**.
+### Conectar el panel con GitHub
 
-### Por qué es seguro tenerlo público
+Se hace una sola vez, desde el botón **Conectar con GitHub**:
 
-Cualquiera puede abrir `admin.html`, pero no puede hacer nada con eso: lo que
-edite queda en su propio navegador y para que llegue a la tienda hace falta
-subir archivos al repositorio, que requiere tu cuenta de GitHub. La página
-tampoco muestra nada que no sea ya público.
+1. Entrar a **Settings → Developer settings → Fine-grained tokens** en GitHub.
+2. En **Repository access**, elegir **Only select repositories** y marcar
+   únicamente este repositorio.
+3. En **Permissions → Repository permissions**, poner **Contents** en
+   **Read and write**. Ningún otro permiso hace falta.
+4. Generar el token, copiarlo y pegarlo en el panel.
 
-Lleva `noindex` para no aparecer en Google.
+El panel prueba la conexión antes de guardarla: si el token no sirve o no tiene
+permiso de escritura, lo dice en el momento en lugar de fallar al publicar.
 
-**Lo que sí conviene saber:** una contraseña en esta página sería decorativa.
-En un sitio estático la clave viaja en el código y se ve con dos clics. Si algún
-día necesitás una barrera real, hace falta un backend.
+### Sobre el token
+
+Queda guardado **en el navegador de quien administra**, y sólo viaja a
+`api.github.com`. No aparece en la dirección ni se escribe en ningún lado.
+
+Un token limitado a este repositorio y al permiso Contents no puede tocar nada
+más de la cuenta: ni otros repositorios, ni la configuración, ni los datos
+personales. Lo peor que podría hacer alguien con él es cambiar el contenido de
+esta tienda, y eso queda registrado en el historial de commits.
+
+**Aun así, es una llave.** Si el panel se usa en una computadora compartida,
+conviene usar la descarga a mano, o desconectar al terminar con el botón
+**Desconectar**.
+
+### Subir fotos
+
+Al editar una pieza, con el panel conectado aparece una zona para arrastrar la
+foto o elegirla del equipo. El panel:
+
+- La achica a 1351 px de lado mayor y la recomprime a JPG de calidad 82,
+  para que la tienda no se ponga lenta en el celular.
+- Le pone un nombre sin acentos ni espacios, con un sufijo que evita pisar una
+  foto existente.
+- La sube al repositorio y la deja elegida en la pieza.
+
+La vista previa se ve al instante, pero **en la tienda aparece recién cuando
+publicás los cambios**: hasta entonces la foto está en el repositorio y la
+página publicada todavía no.
+
+Conviene que sean **verticales**, como las que ya están. Una apaisada entra
+igual, pero el panel avisa de que va a quedar con bandas a los costados.
+
+### Lo que no se puede hacer instantáneo
+
+Publicar dispara el workflow de GitHub Pages, que tarda cerca de un minuto. El
+panel se queda mirando ese proceso y avisa cuando termina, pero esa demora no
+se puede evitar sin cambiar de tecnología.
 
 ### Qué se puede editar
 
@@ -259,7 +295,7 @@ día necesitás una barrera real, hace falta un backend.
 | **Productos** | Precio y stock directo en la tabla. El resto —nombre, categoría, foto, material, descripción, etiqueta y colores de piedra— con el botón Editar. Crear y borrar piezas. Buscador y filtros por categoría y por stock. |
 | **Categorías** | Crear, renombrar, reordenar y borrar. Una categoría con piezas no se puede borrar. `Todo` es fija. |
 | **Envíos y contacto** | Costo de envío, monto de envío gratis, texto del retiro, WhatsApp, Instagram, email y ciudad. |
-| **Cómo publicar** | El paso a paso para subir los archivos. |
+| **Cómo publicar** | Estado de la conexión y el paso a paso. |
 
 ### El stock
 
@@ -274,12 +310,6 @@ que un cliente tenía en el carrito, la próxima vez que entre se le ajusta solo
 
 **Conviene cargarlo.** Con stock real, la etiqueta "Últimas unidades" dice la
 verdad. Sin stock, sería una urgencia inventada.
-
-### Las fotos
-
-El panel no sube fotos: al editar una pieza elegís entre las que ya están en
-`img/productos/`. Para agregar una nueva, subila antes a esa carpeta del
-repositorio y después aparece en la lista.
 
 ### Si algo sale mal
 
@@ -303,6 +333,7 @@ js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO (lo usan las dos)
 js/app.js               Carrito, checkout y catálogo (lo usan las dos)
 js/admin.js             El panel de administración
+js/admin-git.js         Conexión con GitHub: subir fotos y publicar
 img/logo.png            El logo, recortado en círculo
 img/productos/          Las 27 fotos
 .github/workflows/      Publica el sitio solo en cada push
