@@ -1,7 +1,7 @@
 /* ============================================================
    ROMERO JOYERÍA — CONFIGURACIÓN
    ------------------------------------------------------------
-   Generado desde el panel el 18 de septiembre de 2026 a las 11:41 p. m..
+   Generado desde el panel el 19 de septiembre de 2026 a las 12:54 p. m..
 
    El WhatsApp va en formato internacional, sólo números:
    54 + 9 + característica sin el 0 + número sin el 15.
