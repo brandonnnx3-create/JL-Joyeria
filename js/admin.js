@@ -236,20 +236,24 @@
       cuerpo.innerHTML = lista.map((p) => {
         const st = estadoStock(p);
         return '<tr data-id="' + esc(p.id) + '">' +
-          '<td><img class="mini" src="' + esc(fotoSrc(p.img)) + '" alt=""></td>' +
-          '<td class="nom">' + esc(p.nombre) + "<small>" + esc(p.id) + "</small></td>" +
-          "<td>" + esc(nombreCat(p.categoria)) + "</td>" +
-          '<td class="c-num"><input class="in in--num" type="number" min="0" step="100" ' +
+          '<td class="t-img"><img class="mini" src="' + esc(fotoSrc(p.img)) + '" alt=""></td>' +
+          '<td class="t-nom nom">' + esc(p.nombre) + "<small>" + esc(p.id) + "</small></td>" +
+          '<td class="t-cat">' + esc(nombreCat(p.categoria)) + "</td>" +
+          '<td class="t-precio c-num" data-etq="Precio">' +
+            '<input class="in in--num" type="number" min="0" step="100" ' +
             'inputmode="numeric" value="' + Number(p.precio || 0) + '" data-campo="precio" ' +
             'aria-label="Precio de ' + esc(p.nombre) + '"></td>' +
-          '<td class="c-num"><input class="in in--num" type="number" min="0" step="1" ' +
+          '<td class="t-stock c-num" data-etq="Stock">' +
+            '<input class="in in--num" type="number" min="0" step="1" ' +
             'inputmode="numeric" placeholder="—" value="' +
             (typeof p.stock === "number" ? p.stock : "") + '" data-campo="stock" ' +
             'aria-label="Stock de ' + esc(p.nombre) + '"></td>' +
-          "<td>" + (p.etiqueta
+          '<td class="t-eti">' + (p.etiqueta
               ? '<span class="pill">' + esc(p.etiqueta) + "</span>"
-              : '<span class="pill ' + st.clase + '">' + esc(st.txt) + "</span>") + "</td>" +
-          '<td class="c-act"><div class="acciones">' +
+              : st.txt === "—"
+                ? ""
+                : '<span class="pill ' + st.clase + '">' + esc(st.txt) + "</span>") + "</td>" +
+          '<td class="t-act c-act"><div class="acciones">' +
             '<button class="btn btn--quiet btn--sm" data-editar="' + esc(p.id) + '">Editar</button>' +
             '<button class="icono" data-borrar="' + esc(p.id) + '" aria-label="Borrar ' + esc(p.nombre) + '">' +
             '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>' +
@@ -545,16 +549,16 @@
     $("#filasCat").innerHTML = D.categorias.map((c, i) => {
       const fija = c.id === "todos";
       return '<tr data-cat="' + esc(c.id) + '">' +
-        '<td class="c-num">' +
+        '<td class="t-orden c-num">' +
           '<button class="icono" data-mover="-1" ' + (i === 0 ? "disabled" : "") + ' aria-label="Subir">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 15l-6-6-6 6"/></svg></button>' +
           '<button class="icono" data-mover="1" ' + (i === D.categorias.length - 1 ? "disabled" : "") + ' aria-label="Bajar">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>' +
         "</td>" +
-        '<td><input class="in" type="text" value="' + esc(c.nombre) + '" data-campo="nombre" aria-label="Nombre"></td>' +
-        '<td><input class="in" type="text" value="' + esc(c.desc) + '" data-campo="desc" aria-label="Bajada"></td>' +
-        '<td class="c-num">' + cuentaEn(c.id) + "</td>" +
-        '<td class="c-act"><div class="acciones">' +
+        '<td class="t-cnom" data-etq="Nombre"><input class="in" type="text" value="' + esc(c.nombre) + '" data-campo="nombre" aria-label="Nombre"></td>' +
+        '<td class="t-cdesc" data-etq="Bajada"><input class="in" type="text" value="' + esc(c.desc) + '" data-campo="desc" aria-label="Bajada"></td>' +
+        '<td class="t-cn c-num" data-etq="Piezas">' + cuentaEn(c.id) + "</td>" +
+        '<td class="t-cact c-act"><div class="acciones">' +
           (fija
             ? '<span class="pill">Fija</span>'
             : '<button class="icono" data-borrarcat="' + esc(c.id) + '" aria-label="Borrar categoría">' +
@@ -910,13 +914,17 @@
       banda.hidden = true;
       btnPub.hidden = false;
       btnExp.classList.add("btn--quiet");
+      btnExp.classList.remove("btn--principal");
       btnPub.title = "Publica en " + d.owner + "/" + d.repo;
     } else {
       banda.hidden = false;
       banda.dataset.tono = "";
       $("#conexionTxt").textContent =
-        "Conectá el panel con GitHub y las fotos y los cambios se publican solos, sin salir de acá.";
+        "Conectá con GitHub y publicá los cambios sin salir de acá.";
       btnPub.hidden = true;
+      /* Sin conexión, descargar es la acción principal. */
+      btnExp.classList.remove("btn--quiet");
+      btnExp.classList.add("btn--principal");
     }
     pintarEstadoGit();
   }
@@ -1039,6 +1047,17 @@
   }
 
   $("#btnConectar").addEventListener("click", dialogoConexion);
+
+  /* En celular no entran las tres acciones: las secundarias se
+     despliegan desde el botón de puntos. */
+  const mas = $("#btnMas");
+  if (mas) {
+    mas.addEventListener("click", () => {
+      const caja = $(".bar__acts");
+      const abierto = caja.classList.toggle("abierto");
+      mas.setAttribute("aria-expanded", String(abierto));
+    });
+  }
 
   /* ============================================================
      PUBLICAR

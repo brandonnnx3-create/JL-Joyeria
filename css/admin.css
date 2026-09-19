@@ -462,18 +462,161 @@ textarea.in { width: 100%; resize: vertical; min-height: 78px; line-height: 1.55
   .preview { max-width: 210px; }
 }
 
-@media (max-width: 680px) {
-  .bar { gap: 12px; padding: 10px 14px; }
-  .bar__acts { width: 100%; margin-left: 0; }
-  .bar__acts .btn { flex: 1; }
-  .bar__state { order: -1; }
+/* ============================================================
+   CELULAR
+   La tabla deja de ser tabla: cada pieza pasa a ser una ficha
+   con todo a la vista. Desplazar de costado para llegar al
+   precio no es una opción.
+   ============================================================ */
+
+@media (max-width: 720px) {
+
+  /* ---------- Barra superior compacta ---------- */
+
+  .bar {
+    gap: 10px;
+    padding: 10px 14px;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+  }
+
+  .bar__brand img { width: 30px; height: 30px; }
+  .bar__brand small { display: none; }
+  .bar__state { margin-left: auto; padding: 4px 11px; font-size: .75rem; }
+
+  /* Publicar queda a mano; el resto se guarda en un menú. */
+  .bar__acts {
+    width: 100%;
+    margin-left: 0;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .bar__acts .btn { flex: 1; padding: 11px 14px; }
+  /* En la barra queda la acción principal; el resto, en el menú. */
+  .bar__acts #btnDescartar { display: none; }
+  .bar__acts #btnExportar:not(.btn--principal) { display: none; }
+
+  .bar__acts.abierto #btnDescartar,
+  .bar__acts.abierto #btnExportar { display: block; }
+
+  /* Mismo alto que los botones de al lado, para que se pueda tocar. */
+  .mas {
+    display: grid !important;
+    flex: 0 0 auto;
+    width: 44px;
+    align-self: stretch;
+    min-height: 44px;
+    border: 1px solid var(--borde-2);
+    border-radius: var(--r);
+  }
+
+  /* ---------- La tabla se vuelve una lista de fichas ---------- */
+
+  .tabla-wrap {
+    border: 0;
+    background: none;
+    overflow: visible;
+  }
+
+  .tabla { min-width: 0; border-collapse: separate; }
+  .tabla thead { display: none; }
+  .tabla tbody { display: block; }
+
+  /* Áreas explícitas: si el precio hereda la columna de la foto
+     queda de 58 px de ancho y no se puede escribir en él. */
+  .tabla tr {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "img  nom    nom"
+      "img  cat    cat"
+      "prec prec   stock"
+      "eti  eti    eti"
+      "act  act    act";
+    gap: 4px 12px;
+    align-items: start;
+    background: var(--sup);
+    border: 1px solid var(--borde);
+    border-radius: var(--r);
+    padding: 13px;
+    margin-bottom: 10px;
+  }
+
+  .tabla tbody tr:hover { background: var(--sup); }
+  .tabla td { display: block; border: 0; padding: 0; }
+
+  /* Rótulo encima del valor, ya que no hay encabezado de columna. */
+  .tabla td[data-etq]::before {
+    content: attr(data-etq);
+    display: block;
+    font-size: .625rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--txt-3);
+    margin-bottom: 5px;
+  }
+
+  /* --- Ficha de pieza --- */
+
+  .t-img { grid-area: img; }
+  .t-img .mini { width: 58px; height: 77px; }
+
+  .t-nom { grid-area: nom; font-size: .9375rem; line-height: 1.3; }
+  .t-cat { grid-area: cat; font-size: .75rem; color: var(--txt-3); }
+
+  .t-precio { grid-area: prec; }
+  .t-stock  { grid-area: stock; }
+
+  .t-precio, .t-stock { margin-top: 12px; }
+  .tabla td.t-precio, .tabla td.t-stock { text-align: left; }
+  .t-precio .in, .t-stock .in { text-align: left; font-size: .9375rem; padding: 10px 12px; }
+
+  /* Sin etiqueta ni stock no hay nada que mostrar: la fila se colapsa. */
+  .t-eti { grid-area: eti; margin-top: 10px; }
+  .t-eti:empty { display: none; margin: 0; }
+
+  .t-act { grid-area: act; margin-top: 12px; text-align: left; }
+  .t-act .acciones { justify-content: flex-start; gap: 8px; width: 100%; }
+  .t-act .btn { flex: 1; padding: 11px; }
+  .t-act .icono { width: 42px; height: 42px; border: 1px solid var(--borde); }
+
+  /* --- Ficha de categoría --- */
+
+  .tabla #filasCat tr,
+  #filasCat tr { grid-template-columns: minmax(0, 1fr) auto; }
+
+  .t-orden { grid-column: 2 / 3; grid-row: 1; display: flex; gap: 4px; }
+  .t-orden .icono { width: 38px; height: 38px; border: 1px solid var(--borde); }
+
+  .t-cnom { grid-column: 1 / 2; grid-row: 1; }
+  .t-cdesc { grid-column: 1 / -1; margin-top: 10px; }
+  .t-cn { grid-column: 1 / 2; margin-top: 10px; text-align: left; }
+  .tabla td.t-cn { text-align: left; font-size: .875rem; }
+  .t-cact { grid-column: 2 / 3; margin-top: 10px; align-self: end; }
+
+  /* ---------- Barra de filtros ---------- */
+
+  .toolbar { gap: 8px; }
+  .in--search { max-width: none; flex: 1 1 100%; }
+  .toolbar select.in { flex: 1 1 calc(50% - 4px); min-width: 0; }
+  .toolbar__sp { display: none; }
+  .toolbar #btnNuevo,
+  .toolbar #btnNuevaCat { flex: 1 1 100%; padding: 12px; }
+
   .tabs { top: 0; position: static; padding-inline: 14px; }
   .wrap { padding: 16px 14px 80px; }
   .par { grid-template-columns: 1fr; }
-  .in--search { max-width: none; }
   .dlg__pie { flex-direction: column-reverse; }
   .dlg__pie .btn { width: 100%; }
-  .dlg__pie .izq { margin-right: 0; }
+  .dlg__pie .izq { margin-right: 0; text-align: center; }
+  .estado-git { flex-direction: column; gap: 10px; }
+  .luz { margin-top: 0; }
+}
+
+@media (max-width: 420px) {
+  .tabla tr { grid-template-columns: 48px minmax(0, 1fr); padding: 11px; }
+  .t-img .mini { width: 48px; height: 64px; }
+  .bar__brand strong { font-size: .875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

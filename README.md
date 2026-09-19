@@ -288,6 +288,21 @@ Publicar dispara el workflow de GitHub Pages, que tarda cerca de un minuto. El
 panel se queda mirando ese proceso y avisa cuando termina, pero esa demora no
 se puede evitar sin cambiar de tecnología.
 
+### En el celular
+
+El panel está pensado para usarse desde el teléfono, que es donde se va a
+querer corregir un precio o marcar algo agotado.
+
+A partir de 720 px la tabla deja de ser tabla: cada pieza pasa a ser una ficha
+con la foto, el nombre, el precio y el stock **a la vista**, sin desplazar de
+costado. Las acciones secundarias se guardan en el menú de puntos de la barra,
+y la acción principal queda siempre visible: **Publicar cambios** si hay
+conexión, **Descargar archivos** si no.
+
+Si tocás la tabla, tené en cuenta que la ficha del celular se arma con
+`grid-template-areas` en `css/admin.css`. Es importante que el precio no herede
+la columna de la foto: queda de 58 px y no se puede escribir en él.
+
 ### Qué se puede editar
 
 | Pestaña | Qué maneja |
