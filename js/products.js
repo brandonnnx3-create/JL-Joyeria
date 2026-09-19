@@ -1,7 +1,7 @@
 /* ============================================================
    ROMERO JOYERÍA — CATÁLOGO
    ------------------------------------------------------------
-   Generado desde el panel el 18 de septiembre de 2026 a las 11:41 p. m..
+   Generado desde el panel el 19 de septiembre de 2026 a las 12:54 p. m..
    Se puede editar a mano igual: es un archivo común.
 
    categoria: "todos" | "anillos" | "sets" | "dijes" | "cadenas" | "aros"
@@ -27,7 +27,7 @@ const PRODUCTOS = [
     id: "anillo-01",
     nombre: "Anillo Bvlgari",
     categoria: "anillos",
-    precio: 18500,
+    precio: 11111,
     img: "img/productos/anillo-01.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Marco circular grabado alrededor de una piedra central facetada. El modelo más pedido de la casa.",
@@ -37,7 +37,7 @@ const PRODUCTOS = [
     id: "anillo-02",
     nombre: "Anillo Quadra Bvlgari",
     categoria: "anillos",
-    precio: 18500,
+    precio: 11111,
     img: "img/productos/anillo-02.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Marco cuadrado de canto ancho con piedra talla princesa. Base sólida, cómodo de usar todo el día.",
@@ -47,7 +47,7 @@ const PRODUCTOS = [
     id: "anillo-03",
     nombre: "Anillo Quadra Fino",
     categoria: "anillos",
-    precio: 16900,
+    precio: 11111,
     img: "img/productos/anillo-03.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "La versión liviana del Quadra: mismo frente cuadrado sobre una banda más delgada. Ideal para combinar de a dos.",
@@ -57,7 +57,7 @@ const PRODUCTOS = [
     id: "anillo-04",
     nombre: "Anillo Fino Bvlgari",
     categoria: "anillos",
-    precio: 16900,
+    precio: 11111,
     img: "img/productos/anillo-04.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "Frente circular sobre banda delgada. El más discreto de la línea, pensado para uso diario.",
@@ -67,7 +67,7 @@ const PRODUCTOS = [
     id: "anillo-05",
     nombre: "Anillo Sello Plata",
     categoria: "anillos",
-    precio: 21900,
+    precio: 11111,
     img: "img/productos/anillo-05.jpg",
     material: "Plata 925",
     desc: "Sello redondo con frente labrado, sin piedra. Plata pulida sin baño, para quien prefiere el tono frío.",
@@ -77,7 +77,7 @@ const PRODUCTOS = [
     id: "anillo-06",
     nombre: "Anillo Bvlgari Quadra Color",
     categoria: "anillos",
-    precio: 18500,
+    precio: 11111,
     img: "img/productos/anillo-06.jpg",
     material: "Plata 925 con terminación dorada",
     desc: "El Quadra en toda su carta de piedras. Elegí el color al hacer el pedido.",
