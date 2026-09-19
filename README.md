@@ -1,14 +1,15 @@
 # Romero Joyería — sitio web
 
-**Hay dos propuestas de diseño listas para presentar.** Son exactamente la
-misma página —mismo layout, misma tipografía, mismas animaciones, mismo
-catálogo, mismo carrito, mismo checkout por WhatsApp— con una sola diferencia:
-la paleta de colores.
+**El sitio tiene dos versiones de paleta, y las dos se publican.** Son
+exactamente la misma página —mismo layout, misma tipografía, mismas
+animaciones, mismo catálogo, mismo carrito, mismo checkout por WhatsApp— con
+una sola diferencia: la paleta de colores. El visitante elige con cuál navegar
+desde una barra flotante, como un selector de tema claro/oscuro.
 
 | | Archivo | Paleta |
 |---|---|---|
-| **Propuesta A** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. |
-| **Propuesta B** | `clara.html` | Marfil, carbón y champagne como acento, sobre exactamente la misma estructura. |
+| **Oscura** | `index.html` | Negro, dorado y azul de medianoche. Es lo que pidió el cliente. |
+| **Clara** | `clara.html` | Marfil, carbón y champagne como acento, sobre exactamente la misma estructura. |
 
 Las dos tienen el hero en arco, las tres secciones editoriales numeradas
 (01/02/03), la cinta deslizante, el desplazamiento suave de las fotos y el
@@ -20,28 +21,19 @@ valores de los tokens de color en el bloque `:root`—.
 
 En el sitio publicado son:
 
-- Propuesta A → `https://TU-USUARIO.github.io/JL-Joyeria/`
-- Propuesta B → `https://TU-USUARIO.github.io/JL-Joyeria/clara.html`
+- Oscura → `https://TU-USUARIO.github.io/JL-Joyeria/`
+- Clara → `https://TU-USUARIO.github.io/JL-Joyeria/clara.html`
 
-Abajo de cada página hay una barra flotante para pasar de una a la otra durante
-la presentación. El carrito se conserva al cambiar, así se puede mostrar el
-mismo pedido en las dos.
+Abajo de cada página hay una barra flotante (`css/tema.css`) para pasar de una
+a la otra. Es HTML puro —dos links, sin JavaScript—, así que no hay nada que
+mantener ahí más allá de los dos `<a href>`. El carrito se conserva al
+cambiar de versión.
 
----
-
-## Cuando el cliente elija una
-
-Son tres pasos, todos manuales y reversibles con `git`:
-
-1. **Si gana la B**, renombrá `clara.html` a `index.html` (reemplazando la A) y
-   dentro del archivo cambiá `css/clara.css` por el nombre que quieras.
-2. **Borrá la versión descartada**: su `.html` y su `.css` en `css/`.
-3. **Sacá el comparador**: borrá `css/comparador.css`, la línea
-   `<link rel="stylesheet" href="css/comparador.css">` y el bloque
-   `<nav class="vs">` del archivo que quede.
-
-`js/app.js` no distingue entre versiones —no hay ningún `if` de tema—, así que
-no hay nada que tocar ahí al elegir una.
+Si en algún momento se quisiera dejar una sola versión, son dos pasos
+manuales y reversibles con `git`: borrar el `.html` y el `.css` de la que se
+descarta, y sacar de la que queda el `<link>` a `css/tema.css` y el bloque
+`<nav class="tema-switch">`. `js/app.js` no distingue entre versiones —no hay
+ningún `if` de tema—, así que no hay nada que tocar ahí.
 
 ---
 
@@ -387,12 +379,12 @@ sitio esté donde esté, incluso a GitHub Pages.
 ## Estructura
 
 ```
-index.html              Propuesta A (oscura)
-clara.html              Propuesta B (clara)
+index.html              Versión oscura
+clara.html              Versión clara
 admin.html              Panel de administración
-css/oscura.css          Estilos de la A
-css/clara.css           Estilos de la B
-css/comparador.css      La barra para comparar (se borra al elegir)
+css/oscura.css          Estilos de la versión oscura
+css/clara.css           Estilos de la versión clara
+css/tema.css            Barra flotante para elegir versión
 css/admin.css           Estilos del panel
 js/config.js            ← TU NÚMERO DE WHATSAPP Y DATOS DE CONTACTO
 js/products.js          ← EL CATÁLOGO (lo usan las dos)
@@ -405,7 +397,7 @@ img/productos/          Las 27 fotos
 ```
 
 **El catálogo y el checkout son compartidos.** Si cambiás un precio en
-`js/products.js`, cambia en las dos propuestas. Si aparece un error en el
+`js/products.js`, cambia en las dos versiones. Si aparece un error en el
 carrito, se arregla una sola vez.
 
 ### El sistema de color
@@ -446,7 +438,7 @@ leyéndose bien sobre las mismas fotografías.
 
 Dos familias, ni una más. **Bodoni Moda** para la voz de la marca (títulos,
 nombres de pieza, cifras) y **Jost** para todo lo que se opera (navegación,
-botones, formularios, precios). Es igual en las dos propuestas: la tipografía
+botones, formularios, precios). Es igual en las dos versiones: la tipografía
 no es un color, no había nada que tocar ahí.
 
 El tracking se abre en los tamaños chicos (`.3em` en las volantas) y se cierra
@@ -459,7 +451,7 @@ Cinco radios según el papel que cumple cada forma (`--r-xs` a `--r-pill`, de
 6 a 26 px, más el círculo completo para botones y fichas). El hero remata en
 arco (`border-radius: 999px 999px var(--r-lg) var(--r-lg)`), y la segunda
 sección editorial invierte ese arco para que las tres no se lean iguales.
-Ninguna de estas formas cambia entre propuestas: son estructura, no color.
+Ninguna de estas formas cambia entre versiones: son estructura, no color.
 
 ---
 
@@ -511,7 +503,7 @@ que es donde está la pieza en casi todas las tomas.
 
 ## Animaciones
 
-Las dos propuestas comparten el mismo movimiento, definido una sola vez en
+Las dos versiones comparten el mismo movimiento, definido una sola vez en
 `js/app.js`:
 
 - **Apariciones al scrollear**: los bloques entran con un desplazamiento corto
@@ -532,7 +524,7 @@ Dos cosas a tener en cuenta si tocás el código:
 - **Nada queda invisible sin JavaScript.** La clase `js` que habilita los
   estados de entrada la agrega el propio script. Si falla, el contenido se ve.
 - **Se respeta "reducir movimiento"** del sistema: todo queda quieto y legible,
-  sin parallax ni cinta, en las dos propuestas por igual.
+  sin parallax ni cinta, en las dos versiones por igual.
 
 Como `js/app.js` es un solo archivo para las dos páginas, cualquier cambio acá
 —agregar una animación, sacar el parallax, lo que sea— aplica a las dos

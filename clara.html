@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="css/clara.css">
-<link rel="stylesheet" href="css/comparador.css">
+<link rel="stylesheet" href="css/tema.css">
 </head>
 <body>
 
@@ -271,16 +271,9 @@
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<!-- ============================================================
-     Barra para comparar las dos propuestas durante la presentación.
-     No es parte del diseño: se quita junto con css/comparador.css
-     cuando el cliente elija una. Ver README.
-     ============================================================ -->
-<nav class="vs" id="vs" aria-label="Comparar propuestas">
-  <span class="vs__tag">Propuesta</span>
-  <a href="index.html">A · Oscura</a>
-  <a href="clara.html" aria-current="page">B · Clara</a>
-  <button class="vs__x" id="vsX" aria-label="Ocultar esta barra">&times;</button>
+<nav class="tema-switch" aria-label="Elegir versión de la tienda">
+  <a href="index.html">Oscura</a>
+  <a href="clara.html" aria-current="page">Clara</a>
 </nav>
 
 <div id="layer"></div>

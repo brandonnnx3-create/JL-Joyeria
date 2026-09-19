@@ -10,7 +10,7 @@
 
   /* ============================================================
      VERSIÓN ACTIVA
-     Las dos propuestas (index.html y clara.html) comparten
+     Las dos versiones (index.html y clara.html) comparten
      exactamente el mismo HTML y el mismo CSS estructural: sólo
      cambian los valores de color en css/oscura.css y css/clara.css.
      Por eso este archivo no necesita distinguir entre versiones.
@@ -950,27 +950,6 @@
         });
       }
     );
-  }
-
-  /* ============================================================
-     COMPARADOR DE PROPUESTAS
-     Sólo existe mientras se presentan las dos versiones. Si el
-     visitante la oculta, queda oculta en ese navegador.
-     ============================================================ */
-
-  const vs = $("#vs");
-  if (vs) {
-    try {
-      if (localStorage.getItem("rj_vs_oculto") === "1") vs.hidden = true;
-    } catch (e) { /* almacenamiento bloqueado: la barra se muestra */ }
-
-    const cerrar = $("#vsX", vs);
-    if (cerrar) {
-      cerrar.addEventListener("click", () => {
-        vs.hidden = true;
-        try { localStorage.setItem("rj_vs_oculto", "1"); } catch (e) {}
-      });
-    }
   }
 
   loadCart();
